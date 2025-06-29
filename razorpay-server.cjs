@@ -11,8 +11,8 @@ app.use(express.json());
 
 // Use environment variables for security
 const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || 'rzp_live_7O5QP1s4dVusRGhHi7lyWpKhh',
-  key_secret: process.env.RAZORPAY_KEY_SECRET || 'O5QP1s4dVusRGhHi7lyWpKhh' // <-- FILL THIS IN
+  key_id: process.env.RAZORPAY_KEY_ID || 'rzp_live_byPF6D1GXctRmu',
+  key_secret: process.env.RAZORPAY_KEY_SECRET || 'hXqkoju6twmTCAv8foQtuPcX' // <-- FILL THIS IN
 });
 
 app.post('/create-order', async (req, res) => {
