@@ -20,6 +20,22 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, type, onSu
   const [isLoading, setIsLoading] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState<'pending' | 'success' | 'failed'>('pending');
 
+  // Function to load Razorpay script dynamically
+  const loadRazorpayScript = (): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      if (typeof window.Razorpay !== 'undefined') {
+        resolve();
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error('Failed to load Razorpay script'));
+      document.head.appendChild(script);
+    });
+  };
+
   const getPaymentDetails = () => {
     if (type === 'pdf') {
       return {
@@ -69,6 +85,9 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, type, onSu
         }, 1500);
         return;
       }
+
+      // Load Razorpay script if not already loaded
+      await loadRazorpayScript();
 
       // In a real app, you'd make an API call to your backend to create the order
       // For now, we'll simulate the payment flow
