@@ -86,7 +86,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, type, onSu
       }
 
       // 1. Get order_id from backend
-      const backendUrl = process.env.VITE_BACKEND_URL || 'http://localhost:5000';
+      const backendUrl = process.env.VITE_BACKEND_URL || 'https://choice-vision-kcet.onrender.com';
       const res = await fetch(`${backendUrl}/create-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
