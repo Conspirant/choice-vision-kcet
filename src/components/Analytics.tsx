@@ -419,46 +419,46 @@ const Analytics = ({ userRank, userCategory, selectedOptions }: AnalyticsProps) 
           ) : analysisData && (
             <>
               {/* Summary Cards */}
-              <div className="grid md:grid-cols-3 gap-4">
-                <Card className="p-4 glass-card">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+                <Card className="p-3 sm:p-4 glass-card">
                   <div className="flex items-center gap-3">
-                    <CheckCircle className="h-8 w-8 text-green-400" />
+                    <CheckCircle className="h-7 w-7 sm:h-8 sm:w-8 text-green-400" />
                     <div>
-                      <div className="text-2xl font-bold text-green-400">
+                      <div className="text-xl sm:text-2xl font-bold text-green-400">
                         {analysisData.filter((item: any) => item.status === "High Chance").length}
                       </div>
-                      <div className="text-sm text-muted-foreground">High Chance Options</div>
+                      <div className="text-xs sm:text-sm text-muted-foreground">High Chance Options</div>
                     </div>
                   </div>
                 </Card>
-                <Card className="p-4 glass-card">
+                <Card className="p-3 sm:p-4 glass-card">
                   <div className="flex items-center gap-3">
-                    <TrendingUp className="h-8 w-8 text-amber-400" />
+                    <TrendingUp className="h-7 w-7 sm:h-8 sm:w-8 text-amber-400" />
                     <div>
-                      <div className="text-2xl font-bold text-amber-400">
+                      <div className="text-xl sm:text-2xl font-bold text-amber-400">
                         {analysisData.filter((item: any) => item.status === "Moderate Chance").length}
                       </div>
-                      <div className="text-sm text-muted-foreground">Moderate Chance</div>
+                      <div className="text-xs sm:text-sm text-muted-foreground">Moderate Chance</div>
                     </div>
                   </div>
                 </Card>
-                <Card className="p-4 glass-card">
+                <Card className="p-3 sm:p-4 glass-card">
                   <div className="flex items-center gap-3">
-                    <AlertTriangle className="h-8 w-8 text-red-400" />
+                    <AlertTriangle className="h-7 w-7 sm:h-8 sm:w-8 text-red-400" />
                     <div>
-                      <div className="text-2xl font-bold text-red-400">
+                      <div className="text-xl sm:text-2xl font-bold text-red-400">
                         {analysisData.filter((item: any) => item.status === "Low Chance").length}
                       </div>
-                      <div className="text-sm text-muted-foreground">Low Chance Options</div>
+                      <div className="text-xs sm:text-sm text-muted-foreground">Low Chance Options</div>
                     </div>
                   </div>
                 </Card>
               </div>
               
               {/* Charts */}
-              <div className="grid lg:grid-cols-2 gap-6">
-                <Card className="p-6 glass-card">
-                  <h4 className="text-lg font-semibold gradient-text mb-4">Admission Probability by Option</h4>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-6">
+                <Card className="p-3 sm:p-6 glass-card">
+                  <h4 className="text-base sm:text-lg font-semibold gradient-text mb-4">Admission Probability by Option</h4>
                   <ResponsiveContainer width="100%" height={300}>
                     <BarChart data={chartData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -475,8 +475,8 @@ const Analytics = ({ userRank, userCategory, selectedOptions }: AnalyticsProps) 
                     </BarChart>
                   </ResponsiveContainer>
                 </Card>
-                <Card className="p-6 glass-card">
-                  <h4 className="text-lg font-semibold gradient-text mb-4">Status Distribution</h4>
+                <Card className="p-3 sm:p-6 glass-card">
+                  <h4 className="text-base sm:text-lg font-semibold gradient-text mb-4">Status Distribution</h4>
                   <ResponsiveContainer width="100%" height={300}>
                     <PieChart>
                       <Pie
@@ -499,41 +499,33 @@ const Analytics = ({ userRank, userCategory, selectedOptions }: AnalyticsProps) 
               </div>
               
               {/* Detailed Results */}
-              <Card className="p-6 glass-card">
-                <h4 className="text-lg font-semibold gradient-text mb-4">Detailed Analysis</h4>
+              <Card className="p-2 sm:p-6 glass-card">
+                <h4 className="text-base sm:text-lg font-semibold gradient-text mb-4">Detailed Analysis</h4>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
+                  <table className="w-full min-w-[600px] text-xs sm:text-sm">
                     <thead>
                       <tr className="border-b border-amber-400/30">
-                        <th className="text-left py-2 px-4 text-muted-foreground">College-Course</th>
-                        <th className="text-left py-2 px-4 text-muted-foreground">Status</th>
-                        <th className="text-left py-2 px-4 text-muted-foreground">Probability</th>
-                        <th className="text-left py-2 px-4 text-muted-foreground">Cutoff Rank</th>
-                        <th className="text-left py-2 px-4 text-muted-foreground">Year</th>
-                        <th className="text-left py-2 px-4 text-muted-foreground">Round</th>
-                        <th className="text-left py-2 px-4 text-muted-foreground">Match Type</th>
+                        <th className="text-left py-2 px-2 sm:px-4 text-muted-foreground">College-Course</th>
+                        <th className="text-left py-2 px-2 sm:px-4 text-muted-foreground">Status</th>
+                        <th className="text-left py-2 px-2 sm:px-4 text-muted-foreground">Probability</th>
+                        <th className="text-left py-2 px-2 sm:px-4 text-muted-foreground">Cutoff Rank</th>
+                        <th className="text-left py-2 px-2 sm:px-4 text-muted-foreground">Year</th>
+                        <th className="text-left py-2 px-2 sm:px-4 text-muted-foreground">Round</th>
+                        <th className="text-left py-2 px-2 sm:px-4 text-muted-foreground">Match Type</th>
                       </tr>
                     </thead>
                     <tbody>
                       {analysisData.map((item: any, index: number) => (
                         <tr key={index} className="border-b border-purple-800/30">
-                          <td className="py-2 px-4 font-mono text-amber-300">{item.combination}</td>
-                          <td className="py-2 px-4">
-                            <span 
-                              className="px-2 py-1 rounded-full text-xs font-medium"
-                              style={{ 
-                                backgroundColor: `${getStatusColor(item.status)}20`,
-                                color: getStatusColor(item.status)
-                              }}
-                            >
-                              {item.status}
-                            </span>
+                          <td className="py-2 px-2 sm:px-4 font-mono text-amber-300">{item.combination}</td>
+                          <td className="py-2 px-2 sm:px-4">
+                            <span className="font-semibold" style={{ color: getStatusColor(item.status) }}>{item.status}</span>
                           </td>
-                          <td className="py-2 px-4 font-semibold">{item.probability.toFixed(1)}%</td>
-                          <td className="py-2 px-4">{item.cutoffRank}</td>
-                          <td className="py-2 px-4">{item.cutoffYear}</td>
-                          <td className="py-2 px-4">{item.cutoffRound}</td>
-                          <td className="py-2 px-4 text-xs text-muted-foreground">{item.matchType}</td>
+                          <td className="py-2 px-2 sm:px-4">{item.probability}%</td>
+                          <td className="py-2 px-2 sm:px-4">{item.cutoffRank}</td>
+                          <td className="py-2 px-2 sm:px-4">{item.cutoffYear}</td>
+                          <td className="py-2 px-2 sm:px-4">{item.cutoffRound}</td>
+                          <td className="py-2 px-2 sm:px-4">{item.matchType}</td>
                         </tr>
                       ))}
                     </tbody>

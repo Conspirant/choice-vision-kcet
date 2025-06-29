@@ -412,14 +412,14 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
       </Card>
 
       {/* Options Table */}
-      <Card className="p-6 glass-card">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-bold gradient-text">Your Option Entry List ({options.length})</h3>
-          <div className="flex gap-2">
+      <Card className="p-2 sm:p-6 glass-card">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
+          <h3 className="text-lg sm:text-xl font-bold gradient-text">Your Option Entry List ({options.length})</h3>
+          <div className="flex flex-wrap gap-2">
             <Button 
               onClick={loadSavedOptions} 
               variant="outline" 
-              className="border-blue-400/30 hover:bg-blue-950/50"
+              className="border-blue-400/30 hover:bg-blue-950/50 text-xs sm:text-base px-2 sm:px-4"
               disabled={loadingSaved}
             >
               {loadingSaved ? (
@@ -429,7 +429,7 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
               )}
               Load Saved
             </Button>
-            <Button onClick={saveOptions} variant="outline" className="border-amber-400/30 hover:bg-amber-950/50">
+            <Button onClick={saveOptions} variant="outline" className="border-amber-400/30 hover:bg-amber-950/50 text-xs sm:text-base px-2 sm:px-4">
               <Save className="h-4 w-4 mr-2" />
               Save
             </Button>
@@ -437,12 +437,12 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
               <Button 
                 onClick={clearAllOptions} 
                 variant="outline" 
-                className="border-red-400/30 hover:bg-red-950/50"
+                className="border-red-400/30 hover:bg-red-950/50 text-xs sm:text-base px-2 sm:px-4"
               >
                 Clear All
               </Button>
             )}
-            <Button onClick={exportToPDF} className="bg-gradient-to-r from-blue-600 to-indigo-600 glow-button">
+            <Button onClick={exportToPDF} className="bg-gradient-to-r from-blue-600 to-indigo-600 glow-button text-xs sm:text-base px-2 sm:px-4">
               <Download className="h-4 w-4 mr-2" />
               {localStorage.getItem('paid_pdf') === 'true' ? 'Export PDF (Unlimited)' : 'Export PDF (₹5)'}
             </Button>
@@ -451,7 +451,7 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
 
         {options.length > 0 ? (
           <div className="overflow-x-auto">
-            <Table>
+            <Table className="min-w-[600px] text-xs sm:text-sm">
               <TableHeader>
                 <TableRow>
                   <TableHead>College Course</TableHead>
@@ -474,21 +474,21 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
                       draggedItem === index ? 'opacity-50 bg-amber-950/30' : 'hover:bg-amber-950/20'
                     }`}
                   >
-                    <TableCell className="font-mono text-sm text-amber-300">{option.collegeCourse}</TableCell>
-                    <TableCell className="font-bold text-lg text-center">
+                    <TableCell className="font-mono text-xs sm:text-sm text-amber-300">{option.collegeCourse}</TableCell>
+                    <TableCell className="font-bold text-xs sm:text-lg text-center">
                       <Input
                         type="number"
                         value={option.priority}
                         onChange={e => updatePriority(option.id, parseInt(e.target.value) || 0)}
-                        className="w-16 h-8 text-center premium-input text-sm"
+                        className="w-12 sm:w-16 h-8 text-center premium-input text-xs sm:text-sm"
                         min="0"
                         max="999"
                       />
                     </TableCell>
-                    <TableCell className="font-medium text-foreground">{option.collegeName}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground font-medium">{option.location}</TableCell>
-                    <TableCell className="text-sm text-foreground">{option.branchName}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground">Please refer the PDF</TableCell>
+                    <TableCell className="font-medium text-xs sm:text-base text-foreground">{option.collegeName}</TableCell>
+                    <TableCell className="text-xs sm:text-sm text-muted-foreground font-medium">{option.location}</TableCell>
+                    <TableCell className="text-xs sm:text-sm text-foreground">{option.branchName}</TableCell>
+                    <TableCell className="text-xs sm:text-sm text-muted-foreground">Please refer the PDF</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

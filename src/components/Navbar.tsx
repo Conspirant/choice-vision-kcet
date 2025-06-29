@@ -1,10 +1,12 @@
-
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useLocation } from "react-router-dom";
+import { Menu, X } from "lucide-react";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <nav className="sticky top-0 z-50 backdrop-blur-lg bg-white/80 border-b border-purple-200/50">
@@ -50,18 +52,47 @@ const Navbar = () => {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center">
             <Button 
               variant="ghost" 
-              size="sm"
-              onClick={() => navigate('/planner')}
+              size="icon"
+              onClick={() => setMobileMenuOpen((v) => !v)}
               className="bg-gradient-to-r from-purple-600 to-violet-600 text-white glow-button"
             >
-              Start Planning
+              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              <span className="sr-only">Toggle menu</span>
             </Button>
           </div>
         </div>
       </div>
+      {/* Mobile dropdown menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-white/95 border-b border-purple-200/50 shadow-lg animate-fade-in-down">
+          <div className="flex flex-col py-2 px-4 space-y-2">
+            <Button 
+              variant={location.pathname === '/' ? 'default' : 'ghost'}
+              onClick={() => { setMobileMenuOpen(false); navigate('/'); }}
+              className="w-full justify-start"
+            >
+              Home
+            </Button>
+            <Button 
+              variant={location.pathname === '/planner' ? 'default' : 'ghost'}
+              onClick={() => { setMobileMenuOpen(false); navigate('/planner'); }}
+              className="w-full justify-start"
+            >
+              Planner
+            </Button>
+            <Button 
+              variant={location.pathname === '/analytics' ? 'default' : 'ghost'}
+              onClick={() => { setMobileMenuOpen(false); navigate('/analytics'); }}
+              className="w-full justify-start"
+            >
+              Analytics
+            </Button>
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

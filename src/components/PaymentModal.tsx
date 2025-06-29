@@ -74,7 +74,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, type, onSu
       // For now, we'll simulate the payment flow
       
       const options = {
-        key: 'rzp_test_YOUR_KEY_HERE', // Replace with your Razorpay test key
+        key: 'rzp_live_7O5QP1s4dVusRGhHi7lyWpKhh', // Live Razorpay key
         amount: getPaymentDetails().amount,
         currency: 'INR',
         name: 'KCET Choice Vision',
@@ -126,14 +126,14 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, type, onSu
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md bg-gradient-to-br from-purple-900/95 to-indigo-900/95 border-2 border-purple-400/50 shadow-2xl">
-        <div className="p-6">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4">
+      <Card className="w-full max-w-md max-h-[95vh] overflow-y-auto bg-gradient-to-br from-purple-900/95 to-indigo-900/95 border-2 border-purple-400/50 shadow-2xl">
+        <div className="p-3 sm:p-6">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               {details.icon}
-              <h2 className="text-2xl font-bold text-white">{details.title}</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-white">{details.title}</h2>
             </div>
             <Button
               variant="ghost"
@@ -163,23 +163,23 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, type, onSu
 
           {/* Features */}
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-white mb-3">What you'll get:</h3>
+            <h3 className="text-base sm:text-lg font-semibold text-white mb-3">What you'll get:</h3>
             <ul className="space-y-2">
               {details.features.map((feature, index) => (
                 <li key={index} className="flex items-center gap-2 text-gray-300">
                   <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
-                  <span className="text-sm">{feature}</span>
+                  <span className="text-xs sm:text-sm">{feature}</span>
                 </li>
               ))}
             </ul>
           </div>
 
           {/* Price */}
-          <div className="mb-6 p-4 bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-400/50 rounded-lg">
+          <div className="mb-6 p-3 sm:p-4 bg-gradient-to-r from-yellow-900/30 to-orange-900/30 border border-yellow-400/50 rounded-lg">
             <div className="flex items-center justify-between">
-              <span className="text-gray-300">One-time payment:</span>
+              <span className="text-gray-300 text-xs sm:text-base">One-time payment:</span>
               <div className="text-right">
-                <div className="text-2xl font-bold text-yellow-400">₹5</div>
+                <div className="text-xl sm:text-2xl font-bold text-yellow-400">₹5</div>
                 <div className="text-xs text-gray-400">No recurring charges</div>
               </div>
             </div>
@@ -190,7 +190,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, type, onSu
             <Button
               onClick={handlePayment}
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold py-3"
+              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold py-3 text-base sm:text-lg"
             >
               {isLoading ? (
                 <div className="flex items-center gap-2">
