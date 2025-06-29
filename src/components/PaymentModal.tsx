@@ -70,7 +70,6 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, type, onSu
 
   const handlePayment = async () => {
     setIsLoading(true);
-    
     try {
       // Demo mode - simulate payment success
       if (process.env.NODE_ENV === 'development') {
@@ -86,23 +85,29 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, type, onSu
         return;
       }
 
-      // Load Razorpay script if not already loaded
+      // 1. Get order_id from backend
+      const res = await fetch('http://localhost:5000/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: getPaymentDetails().amount }),
+      });
+      if (!res.ok) throw new Error('Failed to create order');
+      const order = await res.json();
+      if (!order.id) throw new Error('Order ID missing from backend');
+
+      // 2. Load Razorpay script if not already loaded
       await loadRazorpayScript();
 
-      // In a real app, you'd make an API call to your backend to create the order
-      // For now, we'll simulate the payment flow
-      
+      // 3. Use the real order_id
       const options = {
-        key: 'rzp_live_7O5QP1s4dVusRGhHi7lyWpKhh', // Live Razorpay key
+        key: 'rzp_live_7O5QP1s4dVusRGhHi7lyWpKhh',
         amount: getPaymentDetails().amount,
         currency: 'INR',
         name: 'KCET Choice Vision',
         description: getPaymentDetails().title,
-        order_id: 'order_' + Date.now(), // In real app, get this from your backend
+        order_id: order.id, // Use real order_id
         handler: function (response: any) {
-          console.log('Payment successful:', response);
           setPaymentStatus('success');
-          // Store payment status in localStorage
           localStorage.setItem(`paid_${type}`, 'true');
           setTimeout(() => {
             onSuccess();
@@ -126,10 +131,10 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, type, onSu
 
       const rzp = new window.Razorpay(options);
       rzp.open();
-      
     } catch (error) {
       console.error('Payment error:', error);
       setPaymentStatus('failed');
+      alert('Payment failed: ' + (error instanceof Error ? error.message : 'Unknown error'));
     } finally {
       setIsLoading(false);
     }
