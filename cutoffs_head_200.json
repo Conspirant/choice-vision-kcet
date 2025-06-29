@@ -1,0 +1,200 @@
+﻿{
+  "metadata": {
+    "last_updated": "2025-05-31T11:17:09.101436",
+    "total_files_processed": 8,
+    "total_entries": 112761
+  },
+  "cutoffs": [
+    {
+      "institute": "University of Visvesvaraya College of Engineering Bangalore ( PUBLIC UNIV. )",
+      "institute_code": "E001",
+      "course": "AI",
+      "category": "1G",
+      "cutoff_rank": 10087,
+      "year": "2023",
+      "round": "EXT"
+    },
+    {
+      "institute": "University of Visvesvaraya College of Engineering Bangalore ( PUBLIC UNIV. )",
+      "institute_code": "E001",
+      "course": "AI",
+      "category": "1K",
+      "cutoff_rank": 20801,
+      "year": "2023",
+      "round": "EXT"
+    },
+    {
+      "institute": "University of Visvesvaraya College of Engineering Bangalore ( PUBLIC UNIV. )",
+      "institute_code": "E001",
+      "course": "AI",
+      "category": "2AG",
+      "cutoff_rank": 9302,
+      "year": "2023",
+      "round": "EXT"
+    },
+    {
+      "institute": "University of Visvesvaraya College of Engineering Bangalore ( PUBLIC UNIV. )",
+      "institute_code": "E001",
+      "course": "AI",
+      "category": "2AR",
+      "cutoff_rank": 10041,
+      "year": "2023",
+      "round": "EXT"
+    },
+    {
+      "institute": "University of Visvesvaraya College of Engineering Bangalore ( PUBLIC UNIV. )",
+      "institute_code": "E001",
+      "course": "AI",
+      "category": "2BG",
+      "cutoff_rank": 12213,
+      "year": "2023",
+      "round": "EXT"
+    },
+    {
+      "institute": "University of Visvesvaraya College of Engineering Bangalore ( PUBLIC UNIV. )",
+      "institute_code": "E001",
+      "course": "AI",
+      "category": "3AG",
+      "cutoff_rank": 7188,
+      "year": "2023",
+      "round": "EXT"
+    },
+    {
+      "institute": "University of Visvesvaraya College of Engineering Bangalore ( PUBLIC UNIV. )",
+      "institute_code": "E001",
+      "course": "AI",
+      "category": "3BG",
+      "cutoff_rank": 7791,
+      "year": "2023",
+      "round": "EXT"
+    },
+    {
+      "institute": "University of Visvesvaraya College of Engineering Bangalore ( PUBLIC UNIV. )",
+      "institute_code": "E001",
+      "course": "AI",
+      "category": "GM",
+      "cutoff_rank": 6935,
+      "year": "2023",
+      "round": "EXT"
+    },
+    {
+      "institute": "University of Visvesvaraya College of Engineering Bangalore ( PUBLIC UNIV. )",
+      "institute_code": "E001",
+      "course": "AI",
+      "category": "GMK",
+      "cutoff_rank": 7979,
+      "year": "2023",
+      "round": "EXT"
+    },
+    {
+      "institute": "University of Visvesvaraya College of Engineering Bangalore ( PUBLIC UNIV. )",
+      "institute_code": "E001",
+      "course": "AI",
+      "category": "GMR",
+      "cutoff_rank": 8653,
+      "year": "2023",
+      "round": "EXT"
+    },
+    {
+      "institute": "University of Visvesvaraya College of Engineering Bangalore ( PUBLIC UNIV. )",
+      "institute_code": "E001",
+      "course": "AI",
+      "category": "SCK",
+      "cutoff_rank": 26148,
+      "year": "2023",
+      "round": "EXT"
+    },
+    {
+      "institute": "University of Visvesvaraya College of Engineering Bangalore ( PUBLIC UNIV. )",
+      "institute_code": "E001",
+      "course": "AI",
+      "category": "STK",
+      "cutoff_rank": 33645,
+      "year": "2023",
+      "round": "EXT"
+    },
+    {
+      "institute": "University of Visvesvaraya College of Engineering Bangalore ( PUBLIC UNIV. )",
+      "institute_code": "E001",
+      "course": "AI",
+      "category": "STR",
+      "cutoff_rank": 24190,
+      "year": "2023",
+      "round": "EXT"
+    },
+    {
+      "institute": "University of Visvesvaraya College of Engineering Bangalore ( PUBLIC UNIV. )",
+      "institute_code": "E001",
+      "course": "CIVIL",
+      "category": "1G",
+      "cutoff_rank": 126281,
+      "year": "2023",
+      "round": "EXT"
+    },
+    {
+      "institute": "University of Visvesvaraya College of Engineering Bangalore ( PUBLIC UNIV. )",
+      "institute_code": "E001",
+      "course": "CIVIL",
+      "category": "1R",
+      "cutoff_rank": 140951,
+      "year": "2023",
+      "round": "EXT"
+    },
+    {
+      "institute": "University of Visvesvaraya College of Engineering Bangalore ( PUBLIC UNIV. )",
+      "institute_code": "E001",
+      "course": "CIVIL",
+      "category": "2AG",
+      "cutoff_rank": 99176,
+      "year": "2023",
+      "round": "EXT"
+    },
+    {
+      "institute": "University of Visvesvaraya College of Engineering Bangalore ( PUBLIC UNIV. )",
+      "institute_code": "E001",
+      "course": "CIVIL",
+      "category": "2AR",
+      "cutoff_rank": 110030,
+      "year": "2023",
+      "round": "EXT"
+    },
+    {
+      "institute": "University of Visvesvaraya College of Engineering Bangalore ( PUBLIC UNIV. )",
+      "institute_code": "E001",
+      "course": "CIVIL",
+      "category": "2BG",
+      "cutoff_rank": 95076,
+      "year": "2023",
+      "round": "EXT"
+    },
+    {
+      "institute": "University of Visvesvaraya College of Engineering Bangalore ( PUBLIC UNIV. )",
+      "institute_code": "E001",
+      "course": "CIVIL",
+      "category": "2BR",
+      "cutoff_rank": 105256,
+      "year": "2023",
+      "round": "EXT"
+    },
+    {
+      "institute": "University of Visvesvaraya College of Engineering Bangalore ( PUBLIC UNIV. )",
+      "institute_code": "E001",
+      "course": "CIVIL",
+      "category": "3AG",
+      "cutoff_rank": 79965,
+      "year": "2023",
+      "round": "EXT"
+    },
+    {
+      "institute": "University of Visvesvaraya College of Engineering Bangalore ( PUBLIC UNIV. )",
+      "institute_code": "E001",
+      "course": "CIVIL",
+      "category": "3AR",
+      "cutoff_rank": 88750,
+      "year": "2023",
+      "round": "EXT"
+    },
+    {
+      "institute": "University of Visvesvaraya College of Engineering Bangalore ( PUBLIC UNIV. )",
+      "institute_code": "E001",
+      "course": "CIVIL",

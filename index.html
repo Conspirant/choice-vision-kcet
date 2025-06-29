@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KCET 2025 Mock Planner - Choice Vision</title>
+    <meta name="description" content="Plan your KCET 2025 college preferences with our comprehensive mock planner. Analyze admission chances, get recommendations, and export your options." />
+    <meta name="keywords" content="KCET 2025, college preferences, option entry, admission analysis, engineering colleges, Karnataka CET" />
+    <meta name="author" content="KCET Choice Vision" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://choice-vision-kcet.vercel.app/" />
+    <meta property="og:title" content="KCET 2025 Mock Planner - Choice Vision" />
+    <meta property="og:description" content="Plan your KCET 2025 college preferences with our comprehensive mock planner. Analyze admission chances, get recommendations, and export your options." />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://choice-vision-kcet.vercel.app/" />
+    <meta property="twitter:title" content="KCET 2025 Mock Planner - Choice Vision" />
+    <meta property="twitter:description" content="Plan your KCET 2025 college preferences with our comprehensive mock planner. Analyze admission chances, get recommendations, and export your options." />
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Theme -->
+    <script>
+      // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+      if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+      
+      // Whenever the theme is explicitly set, let's update the data attribute
+      window.localStorage.theme = 'dark'
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,121 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Royal Purple & Gold Premium Theme Design System */
+
+@layer base {
+  :root {
+    --background: 255 20% 6%;
+    --foreground: 45 100% 85%;
+
+    --card: 255 25% 8%;
+    --card-foreground: 45 95% 90%;
+
+    --popover: 255 25% 8%;
+    --popover-foreground: 45 95% 90%;
+
+    --primary: 45 100% 60%;
+    --primary-foreground: 255 25% 8%;
+
+    --secondary: 255 15% 12%;
+    --secondary-foreground: 45 90% 80%;
+
+    --muted: 255 15% 12%;
+    --muted-foreground: 45 40% 65%;
+
+    --accent: 255 15% 15%;
+    --accent-foreground: 45 90% 80%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 45 60% 40%;
+    --input: 255 20% 10%;
+    --ring: 45 100% 60%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 255 25% 8%;
+    --sidebar-foreground: 45 90% 80%;
+    --sidebar-primary: 45 100% 60%;
+    --sidebar-primary-foreground: 255 25% 8%;
+    --sidebar-accent: 255 15% 15%;
+    --sidebar-accent-foreground: 45 90% 80%;
+    --sidebar-border: 45 60% 40%;
+    --sidebar-ring: 45 100% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-inter;
+    background: linear-gradient(135deg, hsl(255 30% 4%) 0%, hsl(255 40% 8%) 50%, hsl(255 25% 6%) 100%);
+    min-height: 100vh;
+  }
+
+  .glass-card {
+    @apply backdrop-blur-lg border border-amber-400/30;
+    background: linear-gradient(135deg, rgba(138, 43, 226, 0.15) 0%, rgba(75, 0, 130, 0.2) 100%);
+    box-shadow: 0 8px 32px rgba(255, 215, 0, 0.15);
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-amber-300 to-yellow-400 bg-clip-text text-transparent;
+  }
+
+  .glow-button {
+    @apply transition-all duration-300 hover:shadow-lg;
+    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+  }
+
+  .glow-button:hover {
+    box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5);
+  }
+
+  .floating-card {
+    @apply transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl;
+    box-shadow: 0 8px 32px rgba(255, 215, 0, 0.2);
+  }
+
+  .floating-card:hover {
+    box-shadow: 0 12px 40px rgba(255, 215, 0, 0.3);
+  }
+
+  .premium-input {
+    @apply border-2 border-amber-400/50 focus:border-amber-300 rounded-xl text-foreground placeholder:text-muted-foreground;
+    background: linear-gradient(135deg, rgba(75, 0, 130, 0.3) 0%, rgba(138, 43, 226, 0.2) 100%);
+  }
+
+  .premium-select {
+    @apply border-2 border-amber-400/50 focus:border-amber-300 rounded-xl;
+    background: linear-gradient(135deg, rgba(75, 0, 130, 0.3) 0%, rgba(138, 43, 226, 0.2) 100%);
+  }
+
+  .royal-gradient {
+    background: linear-gradient(135deg, hsl(255 50% 15%) 0%, hsl(255 60% 20%) 100%);
+  }
+
+  .gold-accent {
+    @apply text-amber-300;
+  }
+
+  .start-planning-glow {
+    animation: golden-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes golden-pulse {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.7), 0 0 40px rgba(255, 215, 0, 0.3);
+    }
+  }
+}
