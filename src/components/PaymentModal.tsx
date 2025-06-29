@@ -86,7 +86,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, type, onSu
       }
 
       // 1. Get order_id from backend
-      const res = await fetch('http://localhost:5000/create-order', {
+      const backendUrl = process.env.VITE_BACKEND_URL || 'http://localhost:5000';
+      const res = await fetch(`${backendUrl}/create-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount: getPaymentDetails().amount }),
