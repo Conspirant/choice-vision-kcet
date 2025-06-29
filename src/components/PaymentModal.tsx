@@ -87,27 +87,38 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, type, onSu
 
       // 1. Get order_id from backend
       const backendUrl = process.env.VITE_BACKEND_URL || 'https://choice-vision-kcet.onrender.com';
+      console.log('Attempting to connect to backend:', backendUrl);
+      
       const res = await fetch(`${backendUrl}/create-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount: getPaymentDetails().amount }),
       });
-      if (!res.ok) throw new Error('Failed to create order');
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error('Backend response error:', res.status, errorText);
+        throw new Error(`Failed to create order: ${res.status} ${errorText}`);
+      }
+      
       const order = await res.json();
+      console.log('Order created:', order);
+      
       if (!order.id) throw new Error('Order ID missing from backend');
 
       // 2. Load Razorpay script if not already loaded
       await loadRazorpayScript();
 
-      // 3. Use the real order_id
+      // 3. Use the real order_id with the correct key
       const options = {
-        key: 'rzp_live_7O5QP1s4dVusRGhHi7lyWpKhh',
+        key: 'rzp_live_byPF6D1GXctRmu', // Use the same key as backend
         amount: getPaymentDetails().amount,
         currency: 'INR',
         name: 'KCET Choice Vision',
         description: getPaymentDetails().title,
         order_id: order.id, // Use real order_id
         handler: function (response: any) {
+          console.log('Payment successful:', response);
           setPaymentStatus('success');
           localStorage.setItem(`paid_${type}`, 'true');
           setTimeout(() => {

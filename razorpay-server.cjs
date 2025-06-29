@@ -6,7 +6,21 @@ const Razorpay = require('razorpay');
 const cors = require('cors');
 
 const app = express();
-app.use(cors());
+
+// Configure CORS to allow requests from Vercel domains
+app.use(cors({
+  origin: [
+    'https://choice-vision-kcet.vercel.app',
+    'https://choice-vision-kcet-git-main-cons-pirant.vercel.app',
+    'https://choice-vision-kcet-cons-pirant.vercel.app',
+    'http://localhost:5173',
+    'http://localhost:3000'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 
 // Use environment variables for security
