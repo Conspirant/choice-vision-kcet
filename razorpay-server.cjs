@@ -17,16 +17,32 @@ const razorpay = new Razorpay({
 
 app.post('/create-order', async (req, res) => {
   const { amount } = req.body;
+  
+  // Log the request and credentials (without exposing secret)
+  console.log('Create order request:', { amount });
+  console.log('Razorpay Key ID:', razorpay.key_id);
+  console.log('Razorpay Key Secret exists:', !!razorpay.key_secret);
+  
   try {
     const order = await razorpay.orders.create({
       amount: amount, // in paise
       currency: 'INR',
       receipt: 'receipt_' + Date.now(),
     });
+    console.log('Order created successfully:', order.id);
     res.json(order);
   } catch (err) {
     console.error('Razorpay order creation error:', err);
-    res.status(500).json({ error: 'Failed to create order' });
+    console.error('Error details:', {
+      message: err.message,
+      statusCode: err.statusCode,
+      error: err.error
+    });
+    res.status(500).json({ 
+      error: 'Failed to create order',
+      details: err.message,
+      statusCode: err.statusCode || 'unknown'
+    });
   }
 });
 
