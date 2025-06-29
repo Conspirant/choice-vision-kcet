@@ -50,6 +50,31 @@ app.post('/create-order', async (req, res) => {
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Razorpay backend is running' });
 });
-
+// Test Razorpay credentials endpoint
+app.get('/test-razorpay', async (req, res) => {
+  try {
+    // Try to create a test order
+    const testOrder = await razorpay.orders.create({
+      amount: 100, // 1 rupee test
+      currency: 'INR',
+      receipt: 'test_' + Date.now(),
+    });
+    res.json({ 
+      status: 'SUCCESS', 
+      message: 'Razorpay credentials are working',
+      orderId: testOrder.id,
+      keyId: razorpay.key_id,
+      hasSecret: !!razorpay.key_secret
+    });
+  } catch (err) {
+    res.status(500).json({ 
+      status: 'ERROR', 
+      message: 'Razorpay credentials are not working',
+      error: err.message,
+      keyId: razorpay.key_id,
+      hasSecret: !!razorpay.key_secret
+    });
+  }
+});
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Razorpay backend running on port ${PORT}`)); 
