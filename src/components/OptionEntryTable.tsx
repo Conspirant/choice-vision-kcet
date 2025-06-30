@@ -209,15 +209,6 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
   };
 
   const exportToPDF = () => {
-    // Check if user has paid for PDF export
-    const hasPaidForPDF = localStorage.getItem('paid_pdf') === 'true';
-    
-    if (!hasPaidForPDF) {
-      setPendingAction(() => exportToPDF);
-      setPaymentModalOpen(true);
-      return;
-    }
-
     const doc = new jsPDF({ orientation: "landscape" });
     // Premium header
     doc.setFillColor(75, 0, 130); // Royal purple
@@ -444,7 +435,7 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
             )}
             <Button onClick={exportToPDF} className="bg-gradient-to-r from-blue-600 to-indigo-600 glow-button text-xs sm:text-base px-2 sm:px-4">
               <Download className="h-4 w-4 mr-2" />
-              {localStorage.getItem('paid_pdf') === 'true' ? 'Export PDF (Unlimited)' : 'Export PDF (₹5)'}
+              Export PDF
             </Button>
           </div>
         </div>
@@ -514,12 +505,7 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
       </Card>
 
       {/* Payment Modal */}
-      <PaymentModal
-        isOpen={paymentModalOpen}
-        onClose={() => setPaymentModalOpen(false)}
-        type="pdf"
-        onSuccess={handlePaymentSuccess}
-      />
+      {/* PaymentModal removed for PDF export */}
     </div>
   );
 };
