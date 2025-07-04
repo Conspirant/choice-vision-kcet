@@ -80,7 +80,7 @@ const RankInput = ({ onRankSubmit }: RankInputProps) => {
               <SelectTrigger className="premium-select h-12">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-card border-amber-400/30">
+              <SelectContent>
                 <SelectItem value="GM">GM - General Merit</SelectItem>
                 <SelectItem value="GMK">GMK - General Merit (Kannada Medium)</SelectItem>
                 <SelectItem value="GMR">GMR - General Merit (Rural)</SelectItem>
@@ -113,7 +113,7 @@ const RankInput = ({ onRankSubmit }: RankInputProps) => {
               <SelectTrigger className="premium-select h-12">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-card border-amber-400/30">
+              <SelectContent>
                 <SelectItem value="Engineering">Engineering</SelectItem>
                 <SelectItem value="Architecture">Architecture</SelectItem>
               </SelectContent>

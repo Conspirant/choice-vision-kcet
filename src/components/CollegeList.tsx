@@ -146,7 +146,7 @@ const CollegeList = ({ options = [], onOptionsChange }: CollegeListProps) => {
             <SelectTrigger className="premium-select">
               <SelectValue placeholder="College Type" />
             </SelectTrigger>
-            <SelectContent className="bg-card border-purple-500/30">
+            <SelectContent>
               <SelectItem value="all">All Types</SelectItem>
               <SelectItem value="Government">Government</SelectItem>
               <SelectItem value="Aided Private">Aided Private</SelectItem>
@@ -159,7 +159,7 @@ const CollegeList = ({ options = [], onOptionsChange }: CollegeListProps) => {
             <SelectTrigger className="premium-select">
               <SelectValue placeholder="Location" />
             </SelectTrigger>
-            <SelectContent className="bg-card border-purple-500/30 max-h-60">
+            <SelectContent>
               <SelectItem value="all">All Locations</SelectItem>
               {uniqueLocations.map(location => (
                 <SelectItem key={location} value={location}>
@@ -173,7 +173,7 @@ const CollegeList = ({ options = [], onOptionsChange }: CollegeListProps) => {
             <SelectTrigger className="premium-select">
               <SelectValue placeholder="Sort By" />
             </SelectTrigger>
-            <SelectContent className="bg-card border-purple-500/30">
+            <SelectContent>
               <SelectItem value="code">College Code</SelectItem>
               <SelectItem value="name">College Name</SelectItem>
               <SelectItem value="location">Location</SelectItem>
@@ -261,7 +261,7 @@ const CollegeList = ({ options = [], onOptionsChange }: CollegeListProps) => {
                 <SelectTrigger className="premium-select">
                   <SelectValue placeholder="Select course" />
                 </SelectTrigger>
-                <SelectContent className="bg-card border-amber-400/30 max-h-60">
+                <SelectContent>
                   {branches.map(branch => (
                     <SelectItem key={branch.code} value={branch.code}>
                       <span className="font-medium">{branch.code} - {branch.name}</span>

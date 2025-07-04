@@ -97,7 +97,7 @@ const CollegeSelector = ({ onAddPreference, userRank, onNext }: CollegeSelectorP
               <SelectTrigger className="h-12 text-lg border-2 border-purple-200 focus:border-purple-500 rounded-xl premium-select">
                 <SelectValue placeholder="Select College" />
               </SelectTrigger>
-              <SelectContent className="bg-white border-purple-200 max-h-80 p-0">
+              <SelectContent>
                 <div className="sticky top-0 z-10 bg-white p-2 border-b border-purple-100">
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -139,10 +139,10 @@ const CollegeSelector = ({ onAddPreference, userRank, onNext }: CollegeSelectorP
               <SelectTrigger className="h-12 text-lg border-2 border-purple-200 focus:border-purple-500 rounded-xl">
                 <SelectValue placeholder="Choose a branch" />
               </SelectTrigger>
-              <SelectContent className="bg-white border-purple-200 max-h-60">
+              <SelectContent>
                 {branches.map((branch) => (
-                  <SelectItem key={branch.name} value={branch.name}>
-                    {branch.name}
+                  <SelectItem key={branch} value={branch}>
+                    {branch}
                   </SelectItem>
                 ))}
               </SelectContent>
