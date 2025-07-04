@@ -469,9 +469,9 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
         This site is optimized for desktop use and provides the best experience on a computer. Mobile support is provided for convenience, but some features may be limited or look different.
       </div>
       {/* Add Option Form */}
-      <Card className="p-6 glass-card">
+      <Card className={`p-6 glass-card ${isMobile ? 'rounded-2xl p-4' : ''}`}>
         <h3 className="text-xl font-bold gradient-text mb-4">Add New Option</h3>
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className={`grid md:grid-cols-3 gap-4 ${isMobile ? 'gap-2' : ''}`}>
           <div className="col-span-3 md:col-span-1">
             <label className="block text-sm font-medium mb-2 text-foreground">College</label>
             <Select value={selectedCollege} onValueChange={value => {
@@ -543,10 +543,10 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
             </Select>
           </div>
           
-          <div className="flex items-end">
+          <div className="flex items-end w-full md:w-auto">
             <Button 
               onClick={addOption}
-              className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 glow-button"
+              className={`w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 glow-button font-semibold ${isMobile ? 'py-3 text-base rounded-xl' : ''}`}
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Option
@@ -556,7 +556,7 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
       </Card>
 
       {/* Fee Information Card */}
-      <Card className="p-4 glass-card">
+      <Card className={`p-4 glass-card ${isMobile ? 'rounded-2xl p-3 mt-2' : ''}`}>
         <div className="flex items-center gap-3">
           <Info className="h-5 w-5 text-amber-400" />
           <div>
@@ -569,23 +569,22 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
       </Card>
 
       {/* Options Table or Card List */}
-      <Card className="p-2 sm:p-6 glass-card">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
-          <h3 className="text-lg sm:text-xl font-bold gradient-text">Your Option Entry List ({options.length})</h3>
-          <div className="flex flex-wrap gap-2">
-            {/* Search bar for filtering options */}
+      <Card className={`p-2 sm:p-6 glass-card ${isMobile ? 'rounded-2xl p-2 mt-2' : ''}`}>
+        <div className={`flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2 ${isMobile ? 'gap-3' : ''}`}>
+          <h3 className={`text-lg sm:text-xl font-bold gradient-text ${isMobile ? 'mb-2' : ''}`}>Your Option Entry List ({options.length})</h3>
+          <div className={`flex flex-wrap gap-2 w-full ${isMobile ? 'flex-col' : ''}`}>
             <Input
               type="text"
               placeholder="Search your options..."
               value={optionSearch}
               onChange={e => setOptionSearch(e.target.value)}
-              className="w-full sm:w-64 mb-2 sm:mb-0 border-amber-400/50 focus:border-amber-500 rounded-lg text-base"
+              className={`w-full sm:w-64 mb-2 sm:mb-0 border-amber-400/50 focus:border-amber-500 rounded-lg text-base ${isMobile ? 'py-3 text-base rounded-xl' : ''}`}
               style={{ maxWidth: 260 }}
             />
             <Button 
               onClick={loadSavedOptions} 
               variant="outline" 
-              className="border-blue-400/30 hover:bg-blue-950/50 text-xs sm:text-base px-2 sm:px-4"
+              className={`border-blue-400/30 hover:bg-blue-950/50 text-xs sm:text-base px-2 sm:px-4 font-semibold ${isMobile ? 'w-full py-3 text-base rounded-xl' : ''}`}
               disabled={loadingSaved}
             >
               {loadingSaved ? (
@@ -595,7 +594,7 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
               )}
               Load Saved
             </Button>
-            <Button onClick={saveOptions} variant="outline" className="border-amber-400/30 hover:bg-amber-950/50 text-xs sm:text-base px-2 sm:px-4">
+            <Button onClick={saveOptions} variant="outline" className={`border-amber-400/30 hover:bg-amber-950/50 text-xs sm:text-base px-2 sm:px-4 font-semibold ${isMobile ? 'w-full py-3 text-base rounded-xl' : ''}`}>
               <Save className="h-4 w-4 mr-2" />
               Save
             </Button>
@@ -603,12 +602,12 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
               <Button 
                 onClick={clearAllOptions} 
                 variant="outline" 
-                className="border-red-400/30 hover:bg-red-950/50 text-xs sm:text-base px-2 sm:px-4"
+                className={`border-red-400/30 hover:bg-red-950/50 text-xs sm:text-base px-2 sm:px-4 font-semibold ${isMobile ? 'w-full py-3 text-base rounded-xl' : ''}`}
               >
                 Clear All
               </Button>
             )}
-            <Button onClick={exportToPDF} className="bg-gradient-to-r from-blue-600 to-indigo-600 glow-button text-xs sm:text-base px-2 sm:px-4">
+            <Button onClick={exportToPDF} className={`bg-gradient-to-r from-blue-600 to-indigo-600 glow-button text-xs sm:text-base px-2 sm:px-4 font-semibold ${isMobile ? 'w-full py-3 text-base rounded-xl' : ''}`}>
               <Download className="h-4 w-4 mr-2" />
               Export PDF
             </Button>
@@ -621,7 +620,7 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
                 }
               }}
               variant="outline"
-              className="border-green-400/30 hover:bg-green-950/50 text-xs sm:text-base px-2 sm:px-4"
+              className={`border-green-400/30 hover:bg-green-950/50 text-xs sm:text-base px-2 sm:px-4 font-semibold ${isMobile ? 'w-full py-3 text-base rounded-xl' : ''}`}
             >
               <Plus className="h-4 w-4 mr-2" />
               Auto-generate Options
