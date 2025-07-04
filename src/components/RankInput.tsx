@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface RankInputProps {
   onRankSubmit: (rank: number, category: string) => void;
@@ -15,6 +16,7 @@ const RankInput = ({ onRankSubmit }: RankInputProps) => {
   const [category, setCategory] = useState<string>('GM');
   const [stream, setStream] = useState<string>('Engineering');
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const validateRank = (rank: number): boolean => {
     if (isNaN(rank) || rank < 1 || rank > 200000) {
@@ -76,33 +78,64 @@ const RankInput = ({ onRankSubmit }: RankInputProps) => {
             <Label htmlFor="category" className="text-sm font-medium mb-3 block text-foreground">
               Category *
             </Label>
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger className="premium-select h-12">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="GM">GM - General Merit</SelectItem>
-                <SelectItem value="GMK">GMK - General Merit (Kannada Medium)</SelectItem>
-                <SelectItem value="GMR">GMR - General Merit (Rural)</SelectItem>
-                <SelectItem value="1G">1G - Category 1 (General)</SelectItem>
-                <SelectItem value="1K">1K - Category 1 (Kannada Medium)</SelectItem>
-                <SelectItem value="1R">1R - Category 1 (Rural)</SelectItem>
-                <SelectItem value="2AG">2AG - Category 2A (General)</SelectItem>
-                <SelectItem value="2AK">2AK - Category 2A (Kannada Medium)</SelectItem>
-                <SelectItem value="2AR">2AR - Category 2A (Rural)</SelectItem>
-                <SelectItem value="2BG">2BG - Category 2B (General)</SelectItem>
-                <SelectItem value="2BR">2BR - Category 2B (Rural)</SelectItem>
-                <SelectItem value="3AG">3AG - Category 3A (General)</SelectItem>
-                <SelectItem value="3AR">3AR - Category 3A (Rural)</SelectItem>
-                <SelectItem value="3BG">3BG - Category 3B (General)</SelectItem>
-                <SelectItem value="3BK">3BK - Category 3B (Kannada Medium)</SelectItem>
-                <SelectItem value="3BR">3BR - Category 3B (Rural)</SelectItem>
-                <SelectItem value="SCK">SCK - Scheduled Caste (Kannada Medium)</SelectItem>
-                <SelectItem value="SCR">SCR - Scheduled Caste (Rural)</SelectItem>
-                <SelectItem value="STK">STK - Scheduled Tribe (Kannada Medium)</SelectItem>
-                <SelectItem value="STR">STR - Scheduled Tribe (Rural)</SelectItem>
-              </SelectContent>
-            </Select>
+            {isMobile ? (
+              <select
+                id="category"
+                value={category}
+                onChange={e => setCategory(e.target.value)}
+                className="premium-select h-12 w-full text-base px-4 py-3 rounded-xl border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                required
+              >
+                <option value="GM">GM - General Merit</option>
+                <option value="GMK">GMK - General Merit (Kannada Medium)</option>
+                <option value="GMR">GMR - General Merit (Rural)</option>
+                <option value="1G">1G - Category 1 (General)</option>
+                <option value="1K">1K - Category 1 (Kannada Medium)</option>
+                <option value="1R">1R - Category 1 (Rural)</option>
+                <option value="2AG">2AG - Category 2A (General)</option>
+                <option value="2AK">2AK - Category 2A (Kannada Medium)</option>
+                <option value="2AR">2AR - Category 2A (Rural)</option>
+                <option value="2BG">2BG - Category 2B (General)</option>
+                <option value="2BR">2BR - Category 2B (Rural)</option>
+                <option value="3AG">3AG - Category 3A (General)</option>
+                <option value="3AR">3AR - Category 3A (Rural)</option>
+                <option value="3BG">3BG - Category 3B (General)</option>
+                <option value="3BK">3BK - Category 3B (Kannada Medium)</option>
+                <option value="3BR">3BR - Category 3B (Rural)</option>
+                <option value="SCK">SCK - Scheduled Caste (Kannada Medium)</option>
+                <option value="SCR">SCR - Scheduled Caste (Rural)</option>
+                <option value="STK">STK - Scheduled Tribe (Kannada Medium)</option>
+                <option value="STR">STR - Scheduled Tribe (Rural)</option>
+              </select>
+            ) : (
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger className="premium-select h-12">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="GM">GM - General Merit</SelectItem>
+                  <SelectItem value="GMK">GMK - General Merit (Kannada Medium)</SelectItem>
+                  <SelectItem value="GMR">GMR - General Merit (Rural)</SelectItem>
+                  <SelectItem value="1G">1G - Category 1 (General)</SelectItem>
+                  <SelectItem value="1K">1K - Category 1 (Kannada Medium)</SelectItem>
+                  <SelectItem value="1R">1R - Category 1 (Rural)</SelectItem>
+                  <SelectItem value="2AG">2AG - Category 2A (General)</SelectItem>
+                  <SelectItem value="2AK">2AK - Category 2A (Kannada Medium)</SelectItem>
+                  <SelectItem value="2AR">2AR - Category 2A (Rural)</SelectItem>
+                  <SelectItem value="2BG">2BG - Category 2B (General)</SelectItem>
+                  <SelectItem value="2BR">2BR - Category 2B (Rural)</SelectItem>
+                  <SelectItem value="3AG">3AG - Category 3A (General)</SelectItem>
+                  <SelectItem value="3AR">3AR - Category 3A (Rural)</SelectItem>
+                  <SelectItem value="3BG">3BG - Category 3B (General)</SelectItem>
+                  <SelectItem value="3BK">3BK - Category 3B (Kannada Medium)</SelectItem>
+                  <SelectItem value="3BR">3BR - Category 3B (Rural)</SelectItem>
+                  <SelectItem value="SCK">SCK - Scheduled Caste (Kannada Medium)</SelectItem>
+                  <SelectItem value="SCR">SCR - Scheduled Caste (Rural)</SelectItem>
+                  <SelectItem value="STK">STK - Scheduled Tribe (Kannada Medium)</SelectItem>
+                  <SelectItem value="STR">STR - Scheduled Tribe (Rural)</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
           </div>
 
           <div>
