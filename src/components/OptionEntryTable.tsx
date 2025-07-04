@@ -10,9 +10,8 @@ import { colleges, branches, type College } from "@/data/colleges";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { Popover } from "@/components/ui/popover";
-import PaymentModal from "./PaymentModal";
 
-interface OptionEntry {
+export interface OptionEntry {
   id: string;
   priority: number;
   collegeCode: string;
@@ -21,6 +20,13 @@ interface OptionEntry {
   branchName: string;
   location: string;
   collegeCourse: string; // New field for combined code
+  notes?: string; // Optional notes field
+  comments?: {
+    placement?: string;
+    infrastructure?: string;
+    hostel?: string;
+    other?: string;
+  };
 }
 
 interface OptionEntryTableProps {
@@ -29,6 +35,11 @@ interface OptionEntryTableProps {
   options: OptionEntry[];
   onOptionsChange: (options: OptionEntry[]) => void;
 }
+
+// Top/famous college codes (from web/NIRF, matched to colleges.ts)
+// const TOP_COLLEGE_CODES = [
+//   ...
+// ];
 
 const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: OptionEntryTableProps) => {
   const [selectedCollege, setSelectedCollege] = useState<string>('');
@@ -40,9 +51,15 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
   const [draggedItem, setDraggedItem] = useState<number | null>(null);
   const [loadingSaved, setLoadingSaved] = useState(false);
   const { toast } = useToast();
-  // Payment modal state
-  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
+  const [autoBranches, setAutoBranches] = useState<string[]>([]);
+  const [autoDialogOpen, setAutoDialogOpen] = useState(false);
+  const [cutoffs, setCutoffs] = useState<any[]>([]);
+  const [optionSearch, setOptionSearch] = useState<string>("");
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+  const [noteInput, setNoteInput] = useState<string>("");
+  const [editingCommentsId, setEditingCommentsId] = useState<string | null>(null);
+  const [commentInput, setCommentInput] = useState<{placement: string; infrastructure: string; hostel: string; other: string}>({placement: "", infrastructure: "", hostel: "", other: ""});
 
   // Load saved options on mount
   useEffect(() => {
@@ -61,6 +78,20 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
         console.error('Error loading saved options:', error);
       }
     }
+  }, []);
+
+  // Fetch cutoffs.json at runtime
+  useEffect(() => {
+    fetch("/data/cutoffs.json")
+      .then(res => res.json())
+      .then(data => setCutoffs(data.cutoffs || data))
+      .catch(err => {
+        toast({
+          title: "Error loading cutoffs",
+          description: "Could not load cutoffs.json",
+          variant: "destructive"
+        });
+      });
   }, []);
 
   const filteredColleges = colleges.filter(college =>
@@ -208,6 +239,17 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
     });
   };
 
+  // Helper to combine comments for PDF
+  const getCommentsSummary = (comments?: OptionEntry["comments"]): string => {
+    if (!comments) return "";
+    const parts = [];
+    if (comments.placement) parts.push(`Placement: ${comments.placement}`);
+    if (comments.infrastructure) parts.push(`Infra: ${comments.infrastructure}`);
+    if (comments.hostel) parts.push(`Hostel: ${comments.hostel}`);
+    if (comments.other) parts.push(`Other: ${comments.other}`);
+    return parts.join(" | ");
+  };
+
   const exportToPDF = () => {
     const doc = new jsPDF({ orientation: "landscape" });
     // Premium header
@@ -235,16 +277,26 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
       "College Name",
       "Location",
       "Course Name",
-      "Fees"
+      "Fees",
+      "Comments"
     ];
-    const tableRows = options.map((option, idx) => [
-      option.collegeCourse,
-      option.priority,
-      option.collegeName,
-      option.location,
-      option.branchName,
-      "Please refer the PDF"
-    ]);
+    const tableRows = options.map((option, idx) => {
+      let college = colleges.find(c => c.code === option.collegeCode);
+      if (!college) {
+        college = colleges.find(c => c.name === option.collegeName);
+      }
+      const fee = 'please refer pdf';
+      console.log('PDF Export:', { option, found: !!college, fee });
+      return [
+        option.collegeCourse,
+        option.priority,
+        option.collegeName,
+        option.location,
+        option.branchName,
+        fee,
+        getCommentsSummary(option.comments)
+      ];
+    });
 
     // Table styling
     autoTable(doc, {
@@ -298,6 +350,134 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
       pendingAction();
       setPendingAction(null);
     }
+  };
+
+  const autoGenerateOptions = () => {
+    if (!userRank || !userCategory) {
+      toast({
+        title: "Missing Info",
+        description: "Please enter your rank and category first.",
+        variant: "destructive"
+      });
+      return;
+    }
+    if (!autoBranches || autoBranches.length === 0) {
+      setAutoDialogOpen(true);
+      return;
+    }
+    if (!cutoffs || cutoffs.length === 0) {
+      toast({
+        title: "Cutoffs not loaded",
+        description: "Cutoff data is not available yet.",
+        variant: "destructive"
+      });
+      return;
+    }
+    // To avoid duplicate (college, branch) pairs
+    const seenPairs = new Set<string>();
+    let allOptions: OptionEntry[] = [];
+    let priority = 1;
+    autoBranches.forEach((branchCode) => {
+      // Top colleges for this branch
+      // const topColleges = colleges.filter(col => TOP_COLLEGE_CODES.includes(col.code));
+      // topColleges.forEach((college) => {
+      //   const pairKey = `${college.code}-${branchCode}`;
+      //   if (!seenPairs.has(pairKey)) {
+      //     allOptions.push({
+      //       id: `auto-top-${college.code}-${branchCode}`,
+      //       priority: priority++,
+      //       collegeCode: college.code,
+      //       collegeName: college.name,
+      //       branchCode: branchCode,
+      //       branchName: branches.find(b => b.code === branchCode)?.name || branchCode,
+      //       location: college.location,
+      //       collegeCourse: `${college.code}${branchCode}`
+      //     });
+      //     seenPairs.add(pairKey);
+      //   }
+      // });
+      // Eligible colleges by cutoff (any year/round, best cutoff)
+      const bestCutoffByCollege: Record<string, number> = {};
+      cutoffs.forEach((c: any) => {
+        if (
+          c.course === branchCode &&
+          c.category === userCategory &&
+          typeof c.cutoff_rank === "number" &&
+          c.cutoff_rank >= userRank
+        ) {
+          if (
+            bestCutoffByCollege[c.institute_code] === undefined ||
+            c.cutoff_rank < bestCutoffByCollege[c.institute_code]
+          ) {
+            bestCutoffByCollege[c.institute_code] = c.cutoff_rank;
+          }
+        }
+      });
+      // Remove top colleges from eligible list for this branch
+      // const topCodes = new Set(topColleges.map(c => c.code));
+      Object.entries(bestCutoffByCollege)
+        .filter(([collegeCode]) => !topCodes.has(collegeCode))
+        .sort((a, b) => {
+          // Sort by the closest cutoff above the user's rank (smallest positive difference)
+          const diffA = a[1] - userRank;
+          const diffB = b[1] - userRank;
+          return diffA - diffB;
+        })
+        .forEach(([collegeCode]) => {
+          const college = colleges.find(col => col.code === collegeCode);
+          const pairKey = `${collegeCode}-${branchCode}`;
+          if (college && !seenPairs.has(pairKey)) {
+            allOptions.push({
+              id: `auto-eligible-${college.code}-${branchCode}`,
+              priority: priority++,
+              collegeCode: college.code,
+              collegeName: college.name,
+              branchCode: branchCode,
+              branchName: branches.find(b => b.code === branchCode)?.name || branchCode,
+              location: college.location,
+              collegeCourse: `${college.code}${branchCode}`
+            });
+            seenPairs.add(pairKey);
+          }
+        });
+    });
+    onOptionsChange(allOptions);
+    toast({
+      title: "Options Auto-generated! 🚀",
+      description: `Generated ${allOptions.length} options for ${autoBranches.map(bc => branches.find(b => b.code === bc)?.name || bc).join(", ")}`
+    });
+  };
+
+  // Filtered options for table
+  const filteredOptions = options.filter(option => {
+    const search = optionSearch.toLowerCase();
+    return (
+      option.collegeName.toLowerCase().includes(search) ||
+      option.collegeCode.toLowerCase().includes(search) ||
+      option.branchName.toLowerCase().includes(search) ||
+      option.branchCode.toLowerCase().includes(search) ||
+      option.location.toLowerCase().includes(search)
+    );
+  });
+
+  const handleNoteSave = (id: string) => {
+    const updatedOptions = options.map(opt =>
+      opt.id === id ? { ...opt, notes: noteInput } : opt
+    );
+    onOptionsChange(updatedOptions);
+    setEditingNoteId(null);
+    setNoteInput("");
+    localStorage.setItem('kcet-options', JSON.stringify(updatedOptions));
+  };
+
+  const handleCommentsSave = (id: string) => {
+    const updatedOptions = options.map(opt =>
+      opt.id === id ? { ...opt, comments: { ...commentInput } } : opt
+    );
+    onOptionsChange(updatedOptions);
+    setEditingCommentsId(null);
+    setCommentInput({placement: "", infrastructure: "", hostel: "", other: ""});
+    localStorage.setItem('kcet-options', JSON.stringify(updatedOptions));
   };
 
   return (
@@ -407,6 +587,15 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
           <h3 className="text-lg sm:text-xl font-bold gradient-text">Your Option Entry List ({options.length})</h3>
           <div className="flex flex-wrap gap-2">
+            {/* Search bar for filtering options */}
+            <Input
+              type="text"
+              placeholder="Search your options..."
+              value={optionSearch}
+              onChange={e => setOptionSearch(e.target.value)}
+              className="w-full sm:w-64 mb-2 sm:mb-0 border-amber-400/50 focus:border-amber-500 rounded-lg text-base"
+              style={{ maxWidth: 260 }}
+            />
             <Button 
               onClick={loadSavedOptions} 
               variant="outline" 
@@ -437,10 +626,24 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
               <Download className="h-4 w-4 mr-2" />
               Export PDF
             </Button>
+            <Button
+              onClick={() => {
+                if (!selectedBranch) setAutoDialogOpen(true);
+                else {
+                  setAutoBranches([selectedBranch]);
+                  autoGenerateOptions();
+                }
+              }}
+              variant="outline"
+              className="border-green-400/30 hover:bg-green-950/50 text-xs sm:text-base px-2 sm:px-4"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Auto-generate Options
+            </Button>
           </div>
         </div>
 
-        {options.length > 0 ? (
+        {filteredOptions.length > 0 ? (
           <div className="overflow-x-auto">
             <Table className="min-w-[600px] text-xs sm:text-sm">
               <TableHeader>
@@ -451,10 +654,12 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
                   <TableHead>Location</TableHead>
                   <TableHead>Course Name</TableHead>
                   <TableHead>Fees</TableHead>
+                  <TableHead>Notes</TableHead>
+                  <TableHead>Comments</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {options.map((option, index) => (
+                {filteredOptions.map((option, index) => (
                   <TableRow 
                     key={option.id}
                     draggable
@@ -479,7 +684,34 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
                     <TableCell className="font-medium text-xs sm:text-base text-foreground">{option.collegeName}</TableCell>
                     <TableCell className="text-xs sm:text-sm text-muted-foreground font-medium">{option.location}</TableCell>
                     <TableCell className="text-xs sm:text-sm text-foreground">{option.branchName}</TableCell>
-                    <TableCell className="text-xs sm:text-sm text-muted-foreground">Please refer the PDF</TableCell>
+                    <TableCell className="text-xs sm:text-sm text-muted-foreground">
+                      {(() => {
+                        const college = colleges.find(c => c.code === option.collegeCode);
+                        return college && college.fees ? `${college.fees.toLocaleString()}/-` : "-";
+                      })()}
+                    </TableCell>
+                    <TableCell>
+                      <Button size="icon" variant="ghost" onClick={() => {
+                        setEditingNoteId(option.id);
+                        setNoteInput(option.notes || "");
+                      }}>
+                        📝
+                      </Button>
+                    </TableCell>
+                    <TableCell>
+                      <Button size="icon" variant="ghost" onClick={() => {
+                        setEditingCommentsId(option.id);
+                        const c = option.comments || {};
+                        setCommentInput({
+                          placement: c.placement || "",
+                          infrastructure: c.infrastructure || "",
+                          hostel: c.hostel || "",
+                          other: c.other || ""
+                        });
+                      }}>
+                        💬
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -504,8 +736,112 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
         )}
       </Card>
 
-      {/* Payment Modal */}
-      {/* PaymentModal removed for PDF export */}
+      {/* Auto-generate branch selection dialog */}
+      {autoDialogOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-card p-6 rounded-xl shadow-xl w-full max-w-md">
+            <h4 className="text-lg font-bold mb-4">Select Branches/Courses</h4>
+            <div className="max-h-80 overflow-y-auto mb-4">
+              {branches.map(branch => (
+                <label key={branch.code} className="flex items-center space-x-2 py-1 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={autoBranches.includes(branch.code)}
+                    onChange={e => {
+                      if (e.target.checked) {
+                        setAutoBranches(prev => [...prev, branch.code]);
+                      } else {
+                        setAutoBranches(prev => prev.filter(code => code !== branch.code));
+                      }
+                    }}
+                  />
+                  <span className="font-medium text-foreground">{branch.code} - {branch.name}</span>
+                </label>
+              ))}
+            </div>
+            <div className="flex justify-end mt-6 gap-2">
+              <Button onClick={() => setAutoDialogOpen(false)} variant="outline">Cancel</Button>
+              <Button
+                onClick={() => {
+                  setAutoDialogOpen(false);
+                  autoGenerateOptions();
+                }}
+                disabled={autoBranches.length === 0}
+              >
+                Generate
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Notes Modal */}
+      {editingNoteId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-card p-6 rounded-xl shadow-xl w-full max-w-md">
+            <h4 className="text-lg font-bold mb-4">Edit Notes</h4>
+            <textarea
+              className="w-full h-32 border rounded-lg p-2 mb-4"
+              value={noteInput}
+              onChange={e => setNoteInput(e.target.value)}
+              placeholder="Add your notes here..."
+            />
+            <div className="flex justify-end gap-2">
+              <Button onClick={() => setEditingNoteId(null)} variant="outline">Cancel</Button>
+              <Button onClick={() => handleNoteSave(editingNoteId!)} disabled={noteInput.trim() === ""}>Save</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Comments Modal */}
+      {editingCommentsId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-card p-6 rounded-xl shadow-xl w-full max-w-md">
+            <h4 className="text-lg font-bold mb-4">Option Comments</h4>
+            <div className="mb-2">
+              <label className="block font-medium mb-1">Placement</label>
+              <textarea
+                className="w-full h-16 border rounded-lg p-2 mb-2 text-black"
+                value={commentInput.placement}
+                onChange={e => setCommentInput({...commentInput, placement: e.target.value})}
+                placeholder="Write about placements..."
+              />
+            </div>
+            <div className="mb-2">
+              <label className="block font-medium mb-1">Infrastructure</label>
+              <textarea
+                className="w-full h-16 border rounded-lg p-2 mb-2 text-black"
+                value={commentInput.infrastructure}
+                onChange={e => setCommentInput({...commentInput, infrastructure: e.target.value})}
+                placeholder="Write about infrastructure..."
+              />
+            </div>
+            <div className="mb-2">
+              <label className="block font-medium mb-1">Hostel</label>
+              <textarea
+                className="w-full h-16 border rounded-lg p-2 mb-2 text-black"
+                value={commentInput.hostel}
+                onChange={e => setCommentInput({...commentInput, hostel: e.target.value})}
+                placeholder="Write about hostel..."
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block font-medium mb-1">Other</label>
+              <textarea
+                className="w-full h-16 border rounded-lg p-2 text-black"
+                value={commentInput.other}
+                onChange={e => setCommentInput({...commentInput, other: e.target.value})}
+                placeholder="Other comments..."
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button onClick={() => setEditingCommentsId(null)} variant="outline">Cancel</Button>
+              <Button onClick={() => handleCommentsSave(editingCommentsId!)} disabled={Object.values(commentInput).every(v => v.trim() === "")}>Save</Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -3,7 +3,6 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { TrendingUp, AlertTriangle, CheckCircle, Upload, Info } from "lucide-react";
-import PaymentModal from "./PaymentModal";
 
 interface AnalyticsProps {
   userRank: number | null;
@@ -31,7 +30,6 @@ const Analytics = ({ userRank, userCategory, selectedOptions }: AnalyticsProps) 
   const [recCourse, setRecCourse] = useState<string>("");
   const [recCategory, setRecCategory] = useState<string>("");
   // Payment modal state
-  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [paymentType, setPaymentType] = useState<'pdf' | 'analytics'>('pdf');
   const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
 
@@ -296,18 +294,10 @@ const Analytics = ({ userRank, userCategory, selectedOptions }: AnalyticsProps) 
       const hasPaidForAnalytics = checkPaymentStatus('analytics');
       if (!hasPaidForAnalytics) {
         setPaymentType('analytics');
-        setPaymentModalOpen(true);
         return;
       }
     }
     setActiveTab(tab);
-  };
-
-  const handlePaymentSuccess = () => {
-    if (paymentType === 'analytics') {
-      setActiveTab('analytics');
-    }
-    setPaymentModalOpen(false);
   };
 
   return (
@@ -801,14 +791,6 @@ const Analytics = ({ userRank, userCategory, selectedOptions }: AnalyticsProps) 
           </Card>
         </div>
       )}
-
-      {/* Payment Modal */}
-      <PaymentModal
-        isOpen={paymentModalOpen}
-        onClose={() => setPaymentModalOpen(false)}
-        type={paymentType}
-        onSuccess={handlePaymentSuccess}
-      />
     </div>
   );
 };

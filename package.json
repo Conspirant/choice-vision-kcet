@@ -51,13 +51,15 @@
     "razorpay": "^2.9.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-joyride": "^2.9.3",
     "react-router-dom": "^6.20.1",
     "recharts": "^2.8.0",
     "sonner": "^1.7.4",
     "tailwind-merge": "^2.2.0",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.2.2",
-    "vite": "^5.0.8"
+    "vite": "^5.0.8",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.14.0",
