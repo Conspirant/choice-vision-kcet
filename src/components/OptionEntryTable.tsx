@@ -10,6 +10,7 @@ import { colleges, branches, type College } from "@/data/colleges";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { Popover } from "@/components/ui/popover";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export interface OptionEntry {
   id: string;
@@ -60,6 +61,7 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
   const [noteInput, setNoteInput] = useState<string>("");
   const [editingCommentsId, setEditingCommentsId] = useState<string | null>(null);
   const [commentInput, setCommentInput] = useState<{placement: string; infrastructure: string; hostel: string; other: string}>({placement: "", infrastructure: "", hostel: "", other: ""});
+  const isMobile = useIsMobile();
 
   // Load saved options on mount
   useEffect(() => {
@@ -562,7 +564,7 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
         </div>
       </Card>
 
-      {/* Options Table */}
+      {/* Options Table or Card List */}
       <Card className="p-2 sm:p-6 glass-card">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
           <h3 className="text-lg sm:text-xl font-bold gradient-text">Your Option Entry List ({options.length})</h3>
@@ -622,8 +624,35 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
             </Button>
           </div>
         </div>
-
-        {filteredOptions.length > 0 ? (
+        {isMobile ? (
+          <div className="flex flex-col gap-4">
+            {filteredOptions.length === 0 ? (
+              <div className="text-center text-gray-400 py-8">No options added yet.</div>
+            ) : (
+              filteredOptions.map(option => (
+                <div key={option.id} className="rounded-xl border border-amber-200 bg-white/80 shadow p-4 flex flex-col gap-2">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <div className="font-bold text-lg text-foreground">{option.collegeName}</div>
+                      <div className="text-xs text-muted-foreground">{option.location}</div>
+                    </div>
+                    <div className="text-amber-600 font-bold text-xl">{option.priority}</div>
+                  </div>
+                  <div className="flex flex-wrap gap-2 text-sm">
+                    <span className="bg-amber-100 text-amber-800 rounded px-2 py-1">{option.branchName}</span>
+                    <span className="bg-purple-100 text-purple-800 rounded px-2 py-1">{option.collegeCourse}</span>
+                  </div>
+                  <div className="text-xs text-muted-foreground">Fee: please refer pdf</div>
+                  {/* Actions: Edit, Remove, etc. */}
+                  <div className="flex gap-2 mt-2">
+                    <Button size="sm" variant="outline" onClick={() => updatePriority(option.id, 0)} className="flex-1">Remove</Button>
+                    {/* Add more actions as needed */}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        ) : (
           <div className="overflow-x-auto">
             <Table className="min-w-[600px] text-xs sm:text-sm">
               <TableHeader>
@@ -696,22 +725,6 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
                 ))}
               </TableBody>
             </Table>
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <div className="text-4xl mb-4">📝</div>
-            <h4 className="text-xl font-semibold text-muted-foreground mb-2">No Options Added Yet</h4>
-            <p className="text-muted-foreground mb-4">Add your first college and branch preference above</p>
-            <div className="bg-amber-950/20 border border-amber-500/30 rounded-lg p-4 max-w-md mx-auto">
-              <h5 className="font-semibold text-amber-300 mb-2">💡 Tips:</h5>
-              <ul className="text-sm text-amber-200 space-y-1 text-left">
-                <li>• Set priority to 0 to remove an option</li>
-                <li>• Drag and drop to reorder options</li>
-                <li>• Save your options to avoid losing them</li>
-                <li>• Use the Analytics tab to analyze your chances</li>
-                <li>• Export to PDF for offline reference (₹5 - unlimited downloads)</li>
-              </ul>
-            </div>
           </div>
         )}
       </Card>

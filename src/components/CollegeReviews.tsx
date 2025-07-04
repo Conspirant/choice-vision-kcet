@@ -3,10 +3,10 @@ import { colleges } from "@/data/colleges";
 import { Card } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
-
-const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const CollegeReviews = () => {
+  const isMobile = useIsMobile();
   const [selectedCollege, setSelectedCollege] = useState<string>("");
   const [reviewSource, setReviewSource] = useState<'google' | 'shiksha'>('google');
   const [collegeSearch, setCollegeSearch] = useState<string>("");
