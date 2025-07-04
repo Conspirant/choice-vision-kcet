@@ -29,9 +29,6 @@ const Analytics = ({ userRank, userCategory, selectedOptions }: AnalyticsProps) 
   const [recRound, setRecRound] = useState<string>("");
   const [recCourse, setRecCourse] = useState<string>("");
   const [recCategory, setRecCategory] = useState<string>("");
-  // Payment modal state
-  const [paymentType, setPaymentType] = useState<'pdf' | 'analytics'>('pdf');
-  const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
 
   // Fetch cutoffs.json on mount
   useEffect(() => {
@@ -284,41 +281,25 @@ const Analytics = ({ userRank, userCategory, selectedOptions }: AnalyticsProps) 
     fill: getStatusColor(status)
   }));
 
-  // Payment check functions
-  const checkPaymentStatus = (type: 'pdf' | 'analytics') => {
-    return localStorage.getItem(`paid_${type}`) === 'true';
-  };
-
-  const handleTabClick = (tab: 'analytics' | 'recommendations' | 'community') => {
-    if (tab === 'analytics' || tab === 'recommendations') {
-      const hasPaidForAnalytics = checkPaymentStatus('analytics');
-      if (!hasPaidForAnalytics) {
-        setPaymentType('analytics');
-        return;
-      }
-    }
-    setActiveTab(tab);
-  };
-
   return (
     <div className="space-y-6">
       {/* Tab Navigation */}
       <div className="flex gap-4 mb-4">
         <button
           className={`px-4 py-2 rounded-t-lg font-bold ${activeTab === 'analytics' ? 'bg-purple-900 text-yellow-300 border-b-4 border-yellow-400' : 'bg-purple-950 text-purple-300'}`}
-          onClick={() => handleTabClick('analytics')}
+          onClick={() => setActiveTab('analytics')}
         >
-          Analytics {!checkPaymentStatus('analytics') ? '(₹5)' : '(Unlimited)'}
+          Analytics
         </button>
         <button
           className={`px-4 py-2 rounded-t-lg font-bold ${activeTab === 'recommendations' ? 'bg-purple-900 text-yellow-300 border-b-4 border-yellow-400' : 'bg-purple-950 text-purple-300'}`}
-          onClick={() => handleTabClick('recommendations')}
+          onClick={() => setActiveTab('recommendations')}
         >
-          Recommendations {!checkPaymentStatus('analytics') ? '(₹5)' : '(Unlimited)'}
+          Recommendations
         </button>
         <button
           className={`px-4 py-2 rounded-t-lg font-bold ${activeTab === 'community' ? 'bg-blue-900 text-cyan-200 border-b-4 border-cyan-400' : 'bg-blue-950 text-cyan-300'}`}
-          onClick={() => handleTabClick('community')}
+          onClick={() => setActiveTab('community')}
         >
           Community Resources
         </button>
@@ -329,13 +310,6 @@ const Analytics = ({ userRank, userCategory, selectedOptions }: AnalyticsProps) 
         <span className="text-2xl font-bold text-yellow-300">⚠️ Analytics & Recommendations are Beta Features and Under Maintenance ⚠️<br/>Do not make sole decisions from these two features. Cross-check with official sources before proceeding. We are not responsible for any consequences.</span>
       </Card>
 
-      {/* Payment Success Banner */}
-      {checkPaymentStatus('analytics') && (
-        <Card className="p-4 mb-4 bg-gradient-to-r from-green-900/80 to-emerald-900/80 border-4 border-green-400 text-center">
-          <span className="text-lg font-bold text-green-300">✅ Analytics & Recommendations Unlocked! You have unlimited access to all premium features.</span>
-        </Card>
-      )}
-      
       {activeTab === 'analytics' && (
         <>
           {/* Header */}
