@@ -464,6 +464,10 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
 
   return (
     <div className="space-y-6">
+      {/* Desktop-optimized notice */}
+      <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-900 p-3 rounded mb-2 text-sm font-medium">
+        This site is optimized for desktop use and provides the best experience on a computer. Mobile support is provided for convenience, but some features may be limited or look different.
+      </div>
       {/* Add Option Form */}
       <Card className="p-6 glass-card">
         <h3 className="text-xl font-bold gradient-text mb-4">Add New Option</h3>
@@ -477,7 +481,7 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
               <SelectTrigger className="h-12 text-lg border-2 border-amber-400 focus:border-amber-500 rounded-xl premium-select min-h-[48px] md:min-h-[40px]">
                 <SelectValue placeholder="Select College" />
               </SelectTrigger>
-              <SelectContent className="bg-card border-amber-400/30 max-h-80 p-0">
+              <SelectContent>
                 <div className="sticky top-0 z-10 bg-card p-2 border-b border-amber-100">
                   <div className="relative">
                     <Input
@@ -513,7 +517,7 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
               <SelectTrigger className="h-12 text-lg border-2 border-amber-400 focus:border-amber-500 rounded-xl premium-select min-h-[48px] md:min-h-[40px]">
                 <SelectValue placeholder="Select Branch" />
               </SelectTrigger>
-              <SelectContent className="bg-card border-amber-400/30 max-h-80 p-0">
+              <SelectContent>
                 <div className="sticky top-0 z-10 bg-card p-2 border-b border-amber-100">
                   <div className="relative">
                     <Input
@@ -625,26 +629,38 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
           </div>
         </div>
         {isMobile ? (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 px-1 pb-24">
             {filteredOptions.length === 0 ? (
               <div className="text-center text-gray-400 py-8">No options added yet.</div>
             ) : (
               filteredOptions.map(option => (
-                <div key={option.id} className="rounded-xl border border-amber-200 bg-white/80 shadow p-4 flex flex-col gap-2">
-                  <div className="flex justify-between items-center">
+                <div key={option.id} className="rounded-2xl border border-amber-200 bg-white shadow-md p-5 flex flex-col gap-3 relative">
+                  <div className="flex justify-between items-center mb-2">
                     <div>
-                      <div className="font-bold text-lg text-foreground">{option.collegeName}</div>
-                      <div className="text-xs text-muted-foreground">{option.location}</div>
+                      <div className="font-bold text-lg text-gray-900 mb-1">{option.collegeName}</div>
+                      <div className="text-xs text-gray-700 mb-1">{option.location}</div>
                     </div>
-                    <div className="text-amber-600 font-bold text-xl">{option.priority}</div>
+                    <div className="flex flex-col items-end gap-1">
+                      <label className="text-xs text-muted-foreground font-medium mb-1">Priority</label>
+                      <Input
+                        type="number"
+                        value={option.priority}
+                        onChange={e => updatePriority(option.id, parseInt(e.target.value) || 0)}
+                        className="w-16 h-9 text-center premium-input text-base"
+                        min="0"
+                        max="999"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                      />
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-2 text-sm">
-                    <span className="bg-amber-100 text-amber-800 rounded px-2 py-1">{option.branchName}</span>
-                    <span className="bg-purple-100 text-purple-800 rounded px-2 py-1">{option.collegeCourse}</span>
+                  <div className="flex flex-wrap gap-2 text-base mb-2">
+                    <span className="bg-amber-100 text-amber-900 rounded px-2 py-1 font-semibold">{option.branchName}</span>
+                    <span className="bg-purple-100 text-purple-900 rounded px-2 py-1 font-semibold">{option.collegeCourse}</span>
                   </div>
-                  <div className="text-xs text-muted-foreground">Fee: please refer pdf</div>
+                  <div className="text-sm text-gray-800 font-medium mb-2">Fee: <span className="text-amber-700 font-semibold">please refer pdf</span></div>
                   {/* Actions: Edit, Remove, etc. */}
-                  <div className="flex gap-2 mt-2">
+                  <div className="flex gap-2 mt-2 sticky bottom-0 bg-white/90 py-2 rounded-b-2xl z-10">
                     <Button size="sm" variant="outline" onClick={() => updatePriority(option.id, 0)} className="flex-1">Remove</Button>
                     {/* Add more actions as needed */}
                   </div>
@@ -694,10 +710,7 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
                     <TableCell className="text-xs sm:text-sm text-muted-foreground font-medium">{option.location}</TableCell>
                     <TableCell className="text-xs sm:text-sm text-foreground">{option.branchName}</TableCell>
                     <TableCell className="text-xs sm:text-sm text-muted-foreground">
-                      {(() => {
-                        const college = colleges.find(c => c.code === option.collegeCode);
-                        return college && college.fees ? `${college.fees.toLocaleString()}/-` : "-";
-                      })()}
+                      please refer pdf
                     </TableCell>
                     <TableCell>
                       <Button size="icon" variant="ghost" onClick={() => {
