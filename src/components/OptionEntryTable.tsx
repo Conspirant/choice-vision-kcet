@@ -718,10 +718,10 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
 
       {/* Auto-generate branch selection dialog */}
       {autoDialogOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="bg-card p-6 rounded-xl shadow-xl w-full max-w-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 overscroll-contain">
+          <div className="bg-card p-4 rounded-xl shadow-xl w-full max-w-xs sm:max-w-md mx-2 overflow-y-auto max-h-[90vh]">
             <h4 className="text-lg font-bold mb-4">Select Branches/Courses</h4>
-            <div className="max-h-80 overflow-y-auto mb-4">
+            <div className="max-h-60 overflow-y-auto mb-4">
               {branches.map(branch => (
                 <label key={branch.code} className="flex items-center space-x-2 py-1 cursor-pointer">
                   <input
@@ -757,8 +757,8 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
 
       {/* Notes Modal */}
       {editingNoteId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="bg-card p-6 rounded-xl shadow-xl w-full max-w-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 overscroll-contain">
+          <div className="bg-card p-4 rounded-xl shadow-xl w-full max-w-xs sm:max-w-md mx-2 overflow-y-auto max-h-[90vh]">
             <h4 className="text-lg font-bold mb-4">Edit Notes</h4>
             <textarea
               className="w-full h-32 border rounded-lg p-2 mb-4"
@@ -776,8 +776,8 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
 
       {/* Comments Modal */}
       {editingCommentsId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="bg-card p-6 rounded-xl shadow-xl w-full max-w-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 overscroll-contain">
+          <div className="bg-card p-4 rounded-xl shadow-xl w-full max-w-xs sm:max-w-md mx-2 overflow-y-auto max-h-[90vh]">
             <h4 className="text-lg font-bold mb-4">Option Comments</h4>
             <div className="mb-2">
               <label className="block font-medium mb-1">Placement</label>
