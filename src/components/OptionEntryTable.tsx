@@ -378,24 +378,6 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
     let allOptions: OptionEntry[] = [];
     let priority = 1;
     autoBranches.forEach((branchCode) => {
-      // Top colleges for this branch
-      // const topColleges = colleges.filter(col => TOP_COLLEGE_CODES.includes(col.code));
-      // topColleges.forEach((college) => {
-      //   const pairKey = `${college.code}-${branchCode}`;
-      //   if (!seenPairs.has(pairKey)) {
-      //     allOptions.push({
-      //       id: `auto-top-${college.code}-${branchCode}`,
-      //       priority: priority++,
-      //       collegeCode: college.code,
-      //       collegeName: college.name,
-      //       branchCode: branchCode,
-      //       branchName: branches.find(b => b.code === branchCode)?.name || branchCode,
-      //       location: college.location,
-      //       collegeCourse: `${college.code}${branchCode}`
-      //     });
-      //     seenPairs.add(pairKey);
-      //   }
-      // });
       // Eligible colleges by cutoff (any year/round, best cutoff)
       const bestCutoffByCollege: Record<string, number> = {};
       cutoffs.forEach((c: any) => {
@@ -414,9 +396,7 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
         }
       });
       // Remove top colleges from eligible list for this branch
-      // const topCodes = new Set(topColleges.map(c => c.code));
       Object.entries(bestCutoffByCollege)
-        .filter(([collegeCode]) => !topCodes.has(collegeCode))
         .sort((a, b) => {
           // Sort by the closest cutoff above the user's rank (smallest positive difference)
           const diffA = a[1] - userRank;
@@ -486,13 +466,13 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
       <Card className="p-6 glass-card">
         <h3 className="text-xl font-bold gradient-text mb-4">Add New Option</h3>
         <div className="grid md:grid-cols-3 gap-4">
-          <div>
+          <div className="col-span-3 md:col-span-1">
             <label className="block text-sm font-medium mb-2 text-foreground">College</label>
             <Select value={selectedCollege} onValueChange={value => {
               setSelectedCollege(value);
               setCollegeSearch("");
             }}>
-              <SelectTrigger className="h-12 text-lg border-2 border-amber-400 focus:border-amber-500 rounded-xl premium-select">
+              <SelectTrigger className="h-12 text-lg border-2 border-amber-400 focus:border-amber-500 rounded-xl premium-select min-h-[48px] md:min-h-[40px]">
                 <SelectValue placeholder="Select College" />
               </SelectTrigger>
               <SelectContent className="bg-card border-amber-400/30 max-h-80 p-0">
@@ -502,14 +482,14 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
                       placeholder="Search by name or code..."
                       value={collegeSearch}
                       onChange={e => setCollegeSearch(e.target.value)}
-                      className="pl-10 h-10 text-base border border-amber-200 focus:border-amber-500 rounded-lg mb-1 premium-input"
+                      className="pl-10 h-10 text-base border border-amber-200 focus:border-amber-500 rounded-lg mb-1 premium-input min-h-[44px]"
                     />
                   </div>
                 </div>
                 <div className="max-h-60 overflow-y-auto">
                   {(collegeSearch ? filteredColleges : colleges).length > 0 ? (
                     (collegeSearch ? filteredColleges : colleges).map(college => (
-                      <SelectItem key={college.code} value={college.code}>
+                      <SelectItem key={college.code} value={college.code} className="min-h-[44px] md:min-h-[36px] text-base md:text-sm">
                         <span className="font-medium text-foreground">{college.code} - {college.name}</span>
                         <span className="block text-xs text-muted-foreground">{college.location}</span>
                       </SelectItem>
@@ -522,13 +502,13 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
             </Select>
           </div>
           
-          <div>
+          <div className="col-span-3 md:col-span-1">
             <label className="block text-sm font-medium mb-2 text-foreground">Branch</label>
             <Select value={selectedBranch} onValueChange={value => {
               setSelectedBranch(value);
               setBranchSearch("");
             }}>
-              <SelectTrigger className="h-12 text-lg border-2 border-amber-400 focus:border-amber-500 rounded-xl premium-select">
+              <SelectTrigger className="h-12 text-lg border-2 border-amber-400 focus:border-amber-500 rounded-xl premium-select min-h-[48px] md:min-h-[40px]">
                 <SelectValue placeholder="Select Branch" />
               </SelectTrigger>
               <SelectContent className="bg-card border-amber-400/30 max-h-80 p-0">
@@ -538,14 +518,14 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
                       placeholder="Search by name or code..."
                       value={branchSearch}
                       onChange={e => setBranchSearch(e.target.value)}
-                      className="pl-10 h-10 text-base border border-amber-200 focus:border-amber-500 rounded-lg mb-1 premium-input"
+                      className="pl-10 h-10 text-base border border-amber-200 focus:border-amber-500 rounded-lg mb-1 premium-input min-h-[44px]"
                     />
                   </div>
                 </div>
                 <div className="max-h-60 overflow-y-auto">
                   {(branchSearch ? filteredBranches : branches).length > 0 ? (
                     (branchSearch ? filteredBranches : branches).map(branch => (
-                      <SelectItem key={branch.code} value={branch.code}>
+                      <SelectItem key={branch.code} value={branch.code} className="min-h-[44px] md:min-h-[36px] text-base md:text-sm">
                         <span className="font-medium text-foreground">{branch.code} - {branch.name}</span>
                       </SelectItem>
                     ))
