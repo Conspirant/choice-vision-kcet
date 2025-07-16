@@ -23,6 +23,7 @@ export interface OptionEntry {
   collegeCourse: string; // New field for combined code
   notes?: string; // Optional notes field
   comments?: string; // Free-form comment field
+  courseFee?: string; // New field for course fee
 }
 
 interface OptionEntryTableProps {
@@ -36,6 +37,8 @@ interface OptionEntryTableProps {
 // const TOP_COLLEGE_CODES = [
 //   ...
 // ];
+
+const PAGE_SIZE = 20;
 
 const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: OptionEntryTableProps) => {
   const [selectedCollege, setSelectedCollege] = useState<string>('');
@@ -58,6 +61,24 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
   const [commentInput, setCommentInput] = useState<string>("");
   const isMobile = useIsMobile();
   const [showAutoAddLimitPopup, setShowAutoAddLimitPopup] = useState(false);
+
+  // Filtered options for table
+  const filteredOptions = options.filter(option => {
+    const search = optionSearch.toLowerCase();
+    return (
+      option.collegeName.toLowerCase().includes(search) ||
+      option.collegeCode.toLowerCase().includes(search) ||
+      option.branchName.toLowerCase().includes(search) ||
+      option.branchCode.toLowerCase().includes(search) ||
+      option.location.toLowerCase().includes(search)
+    );
+  });
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(filteredOptions.length / PAGE_SIZE);
+  const paginatedOptions = filteredOptions.length > 30
+    ? filteredOptions.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
+    : filteredOptions;
 
   // Load saved options on mount
   useEffect(() => {
@@ -126,7 +147,8 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
       branchCode: branch.code,
       branchName: branch.name,
       location: college.location,
-      collegeCourse: collegeCourse
+      collegeCourse: collegeCourse,
+      courseFee: 'please refer pdf'
     };
 
     onOptionsChange([...options, newOption]);
@@ -277,7 +299,8 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
       if (!college) {
         college = colleges.find(c => c.name === option.collegeName);
       }
-      const fee = 'please refer pdf';
+      // Use the parsed courseFee if available, otherwise fallback to 'please refer pdf'
+      const fee = option.courseFee && option.courseFee.trim() ? option.courseFee : 'please refer pdf';
       console.log('PDF Export:', { option, found: !!college, fee });
       return [
         option.collegeCourse,
@@ -421,7 +444,8 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
               branchCode: branchCode,
               branchName: branches.find(b => b.code === branchCode)?.name || branchCode,
               location: college.location,
-              collegeCourse: `${college.code}${branchCode}`
+              collegeCourse: `${college.code}${branchCode}`,
+              courseFee: 'please refer pdf'
             });
             seenPairs.add(pairKey);
           }
@@ -436,18 +460,6 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
       description: `Generated ${limitedOptions.length} options for ${autoBranches.map(bc => branches.find(b => b.code === bc)?.name || bc).join(", ")}`
     });
   };
-
-  // Filtered options for table
-  const filteredOptions = options.filter(option => {
-    const search = optionSearch.toLowerCase();
-    return (
-      option.collegeName.toLowerCase().includes(search) ||
-      option.collegeCode.toLowerCase().includes(search) ||
-      option.branchName.toLowerCase().includes(search) ||
-      option.branchCode.toLowerCase().includes(search) ||
-      option.location.toLowerCase().includes(search)
-    );
-  });
 
   const handleNoteSave = (id: string) => {
     const updatedOptions = options.map(opt =>
@@ -634,115 +646,49 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
             </Button>
           </div>
         </div>
-        {isMobile ? (
-          <div className="flex flex-col gap-4 px-1 pb-24">
-            {filteredOptions.length === 0 ? (
-              <div className="text-center text-gray-400 py-8">No options added yet.</div>
-            ) : (
-              filteredOptions.map((option, index) => (
-                <div key={option.id} className="rounded-2xl border border-amber-200 bg-white shadow-md p-5 flex flex-col gap-3 relative">
-                  <div className="flex justify-between items-center mb-2">
-                    <div>
-                      <div className="font-bold text-lg text-gray-900 mb-1">{option.collegeName}</div>
-                      <div className="text-xs text-gray-700 mb-1">{option.location}</div>
-                    </div>
-                    <div className="flex flex-col items-end gap-1">
-                      <label htmlFor={`priority-input-${option.id}-${index}`} className="text-xs text-muted-foreground font-medium mb-1">Priority</label>
-                      <Input
-                        id={`priority-input-${option.id}-${index}`}
-                        name={`priority-input-${option.id}-${index}`}
-                        type="number"
-                        value={option.priority}
-                        onChange={e => updatePriority(option.id, parseInt(e.target.value) || 0)}
-                        className="w-16 h-9 text-center premium-input text-base"
-                        min="0"
-                        max="999"
-                        inputMode="numeric"
-                        pattern="[0-9]*"
-                      />
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap gap-2 text-base mb-2">
-                    <span className="bg-amber-100 text-amber-900 rounded px-2 py-1 font-semibold">{option.branchName}</span>
-                    <span className="bg-purple-100 text-purple-900 rounded px-2 py-1 font-semibold">{option.collegeCourse}</span>
-                  </div>
-                  <div className="text-sm text-gray-800 font-medium mb-2">Fee: <span className="text-amber-700 font-semibold">please refer pdf</span></div>
-                  {/* Actions: Edit, Remove, etc. */}
-                  <div className="flex gap-2 mt-2 sticky bottom-0 bg-white/90 py-2 rounded-b-2xl z-10">
-                    <Button size="sm" variant="outline" onClick={() => updatePriority(option.id, 0)} className="flex-1">Remove</Button>
-                    {/* Add more actions as needed */}
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        ) : (
           <div className="overflow-x-auto">
-            <Table className="min-w-[600px] text-xs sm:text-sm">
-              <TableHeader>
+          <div className="relative">
+            <Table className="w-full min-w-[900px] text-xs sm:text-sm border-separate border-spacing-0">
+              <TableHeader className="sticky top-0 z-10 bg-background shadow border-b border-amber-400/60">
                 <TableRow>
-                  <TableHead>College Course</TableHead>
-                  <TableHead>Option No</TableHead>
-                  <TableHead>College Name</TableHead>
-                  <TableHead>Location</TableHead>
-                  <TableHead>Course Name</TableHead>
-                  <TableHead>Fees</TableHead>
-                  <TableHead>Notes</TableHead>
-                  <TableHead>Comments</TableHead>
+                  <TableHead className="bg-background sticky top-0 z-20 border-b border-amber-400/60">Optn. No</TableHead>
+                  <TableHead className="bg-background sticky top-0 z-20 border-b border-amber-400/60">College Course</TableHead>
+                  <TableHead className="bg-background sticky top-0 z-20 border-b border-amber-400/60">Course Name</TableHead>
+                  <TableHead className="bg-background sticky top-0 z-20 border-b border-amber-400/60">Course Fee per Annum (Rs)</TableHead>
+                  <TableHead className="bg-background sticky top-0 z-20 border-b border-amber-400/60">College Name</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredOptions.map((option, index) => (
+                {(filteredOptions.length > 30 ? paginatedOptions : filteredOptions).map((option, index) => (
                   <TableRow 
                     key={option.collegeCourse + '-' + option.priority + '-' + index}
                     draggable
                     onDragStart={() => handleDragStart(index)}
                     onDragOver={handleDragOver}
                     onDrop={(e) => handleDrop(e, index)}
-                    className={`cursor-move transition-all duration-200 border-amber-400/20 ${
-                      draggedItem === index ? 'opacity-50 bg-amber-950/30' : index % 2 === 0 ? 'bg-amber-50/10' : 'bg-amber-950/10 hover:bg-amber-950/20'
+                    className={`cursor-move border-b border-amber-400/20 ${
+                      index % 2 === 0 ? 'bg-amber-50/10' : 'bg-amber-950/10 hover:bg-amber-950/20'
                     }`}
                   >
-                    <TableCell className="font-mono text-xs sm:text-sm text-amber-300">{option.collegeCourse}</TableCell>
-                    <TableCell className="font-bold text-xs sm:text-lg text-center">
-                      <label htmlFor={`priority-input-${option.id}-${index}`} className="text-xs text-muted-foreground font-medium mb-1">Priority</label>
-                      <Input
-                        id={`priority-input-${option.id}-${index}`}
-                        name={`priority-input-${option.id}-${index}`}
-                        type="number"
-                        value={option.priority}
-                        onChange={e => updatePriority(option.id, parseInt(e.target.value) || 0)}
-                        className="w-12 sm:w-16 h-8 text-center premium-input text-xs sm:text-sm"
-                        min="0"
-                        max="999"
-                      />
-                    </TableCell>
-                    <TableCell className="font-medium text-xs sm:text-base text-foreground max-w-[260px] whitespace-pre-line break-words" title={option.collegeName}>{option.collegeName}</TableCell>
-                    <TableCell className="text-xs sm:text-sm text-muted-foreground font-medium">{option.location}</TableCell>
-                    <TableCell className="text-xs sm:text-sm text-foreground max-w-[220px] whitespace-pre-line break-words" title={option.branchName}>{option.branchName}</TableCell>
-                    <TableCell className="text-xs sm:text-sm text-muted-foreground" title="please refer pdf">please refer pdf</TableCell>
-                    <TableCell>
-                      <Button size="icon" variant="ghost" onClick={() => {
-                        setEditingNoteId(option.id);
-                        setNoteInput(option.notes || "");
-                      }}>
-                        📝
-                      </Button>
-                    </TableCell>
-                    <TableCell>
-                      <Button size="icon" variant="ghost" onClick={() => {
-                        setEditingCommentsId(option.id);
-                        setCommentInput(option.comments || "");
-                      }}>
-                        💬
-                      </Button>
-                    </TableCell>
+                    <TableCell className="font-bold text-xs sm:text-lg text-center align-middle whitespace-nowrap">{option.priority}</TableCell>
+                    <TableCell className="font-mono text-xs sm:text-sm text-amber-300 align-middle whitespace-nowrap">{option.collegeCourse}</TableCell>
+                    <TableCell className="text-xs sm:text-sm text-foreground align-middle whitespace-normal max-w-[220px]" title={option.branchName}>{option.branchName}</TableCell>
+                    <TableCell className="text-xs sm:text-sm text-muted-foreground align-middle whitespace-nowrap">{option.courseFee || 'please refer pdf'}</TableCell>
+                    <TableCell className="font-medium text-xs sm:text-base text-foreground align-middle whitespace-normal max-w-[260px]" title={option.collegeName}>{option.collegeName}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
+            {/* Pagination Controls */}
+            {filteredOptions.length > 30 && (
+              <div className="flex justify-center items-center gap-2 mt-4">
+                <Button size="sm" variant="outline" onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>Prev</Button>
+                <span className="text-sm font-medium">Page {currentPage} of {totalPages}</span>
+                <Button size="sm" variant="outline" onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>Next</Button>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </Card>
 
       {/* Auto-generate branch selection dialog */}
