@@ -188,6 +188,7 @@ const CutoffExplorer: React.FC<{ userRank: number | null; userCategory: string }
   const [showAllColleges, setShowAllColleges] = useState(false);
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
   const [category, setCategory] = useState<string>("");
+  const [isMobile, setIsMobile] = useState(false);
 
   // Extract unique filter options
   const allCities = getUnique(colleges.map(c => c.location));
@@ -289,6 +290,16 @@ const CutoffExplorer: React.FC<{ userRank: number | null; userCategory: string }
               const options = Array.from(e.target.selectedOptions).map(o => o.value);
               if (options.length <= 5) setSelectedCourses(options);
             }}
+            style={isMobile ? {
+              width: '100%',
+              fontSize: 18,
+              padding: '14px',
+              borderRadius: 16,
+              boxShadow: '0 8px 32px 0 rgba(0,0,0,0.10)',
+              background: '#2e1065',
+              maxHeight: '60vh',
+              color: '#f3e8ff',
+            } : {}}
           >
             {allCourses.map(code => (
               <option key={code} value={code} className="bg-purple-900 text-purple-100">
@@ -300,7 +311,22 @@ const CutoffExplorer: React.FC<{ userRank: number | null; userCategory: string }
         </div>
         <div>
           <label htmlFor="category-select" className="block text-xs font-semibold mb-1 text-purple-200">Category</label>
-          <select id="category-select" name="category-select" className={premiumInputClass} value={category} onChange={e => setCategory(e.target.value)}>
+          <select
+            id="category-select"
+            name="category-select"
+            className={premiumInputClass}
+            value={category}
+            onChange={e => setCategory(e.target.value)}
+            style={isMobile ? {
+              width: '100%',
+              fontSize: 18,
+              padding: '14px',
+              borderRadius: 16,
+              boxShadow: '0 8px 32px 0 rgba(0,0,0,0.10)',
+              background: '#fff',
+              maxHeight: '60vh',
+            } : {}}
+          >
             {allCategories.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
         </div>

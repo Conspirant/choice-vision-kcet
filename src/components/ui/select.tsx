@@ -87,7 +87,7 @@ const SelectContent = React.forwardRef<
           // Desktop styles
           "md:relative md:z-50 md:max-h-96 md:min-w-[8rem] md:w-auto md:overflow-hidden md:rounded-md md:border md:bg-popover md:text-popover-foreground md:shadow-md md:data-[state=open]:animate-in md:data-[state=closed]:animate-out md:data-[state=closed]:fade-out-0 md:data-[state=open]:fade-in-0 md:data-[state=closed]:zoom-out-95 md:data-[state=open]:zoom-in-95 md:data-[side=bottom]:slide-in-from-top-2 md:data-[side=left]:slide-in-from-right-2 md:data-[side=right]:slide-in-from-left-2 md:data-[side=top]:slide-in-from-bottom-2 md:w-auto md:max-h-96 ",
           // Mobile bottom sheet styles (strengthened)
-          "fixed inset-0 z-[9999] max-h-[60vh] w-full max-w-full mx-auto rounded-t-2xl border-t border-x border-b-0 bg-popover text-popover-foreground shadow-2xl transition-all duration-200 ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 md:hidden overflow-y-auto",
+          "fixed inset-0 z-[9999] max-h-[70vh] w-full max-w-full mx-auto rounded-t-2xl border-t border-x border-b-0 bg-popover text-popover-foreground shadow-2xl transition-all duration-200 ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 md:hidden overflow-y-auto p-2",
           className
         )}
         position={position}
@@ -129,14 +129,14 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex w-full cursor-default select-none items-center rounded-sm py-3 pl-10 pr-4 text-base min-h-[44px] outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 md:py-1.5 md:pl-8 md:pr-2 md:text-sm",
+      "relative flex w-full cursor-default select-none items-center rounded-xl py-4 pl-12 pr-4 text-lg min-h-[56px] outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 md:py-1.5 md:pl-8 md:pr-2 md:text-sm md:rounded-sm md:min-h-[36px]",
       className
     )}
     {...props}
   >
-    <span className="absolute left-3 md:left-2 flex h-4 w-4 items-center justify-center">
+    <span className="absolute left-4 md:left-2 flex h-5 w-5 items-center justify-center">
       <SelectPrimitive.ItemIndicator>
-        <Check className="h-5 w-5 md:h-4 md:w-4" />
+        <Check className="h-6 w-6 md:h-4 md:w-4" />
       </SelectPrimitive.ItemIndicator>
     </span>
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>

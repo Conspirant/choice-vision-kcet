@@ -497,7 +497,7 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
               setSelectedCollege(value);
               setCollegeSearch("");
             }}>
-              <SelectTrigger id="college-select" name="college-select" className="h-12 text-lg border-2 border-amber-400 focus:border-amber-500 rounded-xl premium-select min-h-[48px] md:min-h-[40px]">
+              <SelectTrigger id="college-select" name="college-select" className="h-14 text-xl border-2 border-amber-400 focus:border-amber-500 rounded-2xl premium-select w-full shadow-md">
                 <SelectValue placeholder="Select College" />
               </SelectTrigger>
               <SelectContent>
@@ -533,7 +533,7 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
               setSelectedBranch(value);
               setBranchSearch("");
             }}>
-              <SelectTrigger id="branch-select" name="branch-select" className="h-12 text-lg border-2 border-amber-400 focus:border-amber-500 rounded-xl premium-select min-h-[48px] md:min-h-[40px]">
+              <SelectTrigger id="branch-select" name="branch-select" className="h-14 text-xl border-2 border-amber-400 focus:border-amber-500 rounded-2xl w-full shadow-md">
                 <SelectValue placeholder="Select Branch" />
               </SelectTrigger>
               <SelectContent>
@@ -565,9 +565,9 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
           <div className="flex items-end w-full md:w-auto">
             <Button 
               onClick={addOption}
-              className={`w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 glow-button font-semibold ${isMobile ? 'py-3 text-base rounded-xl' : ''}`}
+              className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 glow-button font-semibold py-4 text-xl rounded-2xl shadow-lg"
             >
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="h-6 w-6 mr-2" />
               Add Option
             </Button>
           </div>

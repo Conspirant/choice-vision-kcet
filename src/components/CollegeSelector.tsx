@@ -94,7 +94,7 @@ const CollegeSelector = ({ onAddPreference, userRank, onNext }: CollegeSelectorP
               setSelectedCollege(value);
               setCollegeSearch(""); // Clear search after selection
             }}>
-              <SelectTrigger id="college-select" name="college-select" className="h-12 text-lg border-2 border-purple-200 focus:border-purple-500 rounded-xl premium-select">
+              <SelectTrigger id="college-select" name="college-select" className="h-14 text-xl border-2 border-purple-200 focus:border-purple-500 rounded-2xl premium-select w-full shadow-md">
                 <SelectValue placeholder="Select College" />
               </SelectTrigger>
               <SelectContent>
@@ -136,7 +136,7 @@ const CollegeSelector = ({ onAddPreference, userRank, onNext }: CollegeSelectorP
               Select Branch *
             </Label>
             <Select value={selectedBranch} onValueChange={setSelectedBranch}>
-              <SelectTrigger id="branch-select" name="branch-select" className="h-12 text-lg border-2 border-purple-200 focus:border-purple-500 rounded-xl">
+              <SelectTrigger id="branch-select" name="branch-select" className="h-14 text-xl border-2 border-purple-200 focus:border-purple-500 rounded-2xl w-full shadow-md">
                 <SelectValue placeholder="Choose a branch" />
               </SelectTrigger>
               <SelectContent>
@@ -151,9 +151,9 @@ const CollegeSelector = ({ onAddPreference, userRank, onNext }: CollegeSelectorP
           {/* Add Button (unchanged) */}
           <Button 
             onClick={handleAddPreference}
-            className="w-full h-12 text-lg bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-xl glow-button font-semibold"
+            className="w-full h-14 text-xl bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-2xl glow-button font-semibold shadow-lg"
           >
-            <Plus className="h-5 w-5 mr-2" />
+            <Plus className="h-6 w-6 mr-2" />
             Add to Preferences
           </Button>
         </div>

@@ -39,12 +39,21 @@ const CollegeReviews = () => {
               autoComplete="off"
             />
             {showSuggestions && collegeSearch && filteredColleges.length > 0 && (
-              <ul className="absolute z-20 w-full bg-white border border-amber-400 rounded shadow max-h-60 overflow-y-auto scroll-smooth divide-y divide-amber-100">
+              <ul className="absolute z-30 w-full bg-white border border-amber-400 rounded-2xl shadow-2xl max-h-72 overflow-y-auto scroll-smooth divide-y divide-amber-100 left-0 top-full mt-1 p-1"
+                  style={{
+                    fontSize: isMobile ? '1.15rem' : '1rem',
+                    minWidth: '100%',
+                    boxShadow: isMobile ? '0 8px 32px 0 rgba(0,0,0,0.18)' : undefined,
+                    borderRadius: isMobile ? 18 : 12,
+                    maxHeight: isMobile ? '60vh' : '18rem',
+                  }}
+                  onTouchMove={e => e.stopPropagation()}
+                >
                 {filteredColleges.slice(0, 10).map(col => (
                   <li
                     key={col.code}
-                    className="px-4 py-4 sm:py-3 cursor-pointer hover:bg-amber-100 text-black text-ellipsis whitespace-nowrap overflow-hidden text-lg sm:text-base"
-                    style={{ fontSize: isMobile ? '1.1rem' : '1rem', minHeight: 48 }}
+                    className="px-5 py-4 sm:py-3 cursor-pointer hover:bg-amber-100 text-black text-ellipsis whitespace-nowrap overflow-hidden text-lg sm:text-base rounded-xl"
+                    style={{ fontSize: isMobile ? '1.15rem' : '1rem', minHeight: isMobile ? 56 : 48, borderRadius: isMobile ? 16 : 10 }}
                     onMouseDown={() => {
                       setSelectedCollege(col.code);
                       setCollegeSearch(`${col.code} - ${col.name}`);

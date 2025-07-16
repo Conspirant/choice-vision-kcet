@@ -86,7 +86,17 @@ const RankInput = ({ onRankSubmit }: RankInputProps) => {
                   name="category"
                   value={category}
                   onChange={e => setCategory(e.target.value)}
-                  style={{ width: '100%', fontSize: 18, padding: '12px', borderRadius: 12, border: '1px solid #ccc', marginBottom: 12 }}
+                  style={{
+                    width: '100%',
+                    fontSize: 20,
+                    padding: '16px',
+                    borderRadius: 16,
+                    border: '1.5px solid #eab308',
+                    marginBottom: 14,
+                    boxShadow: '0 8px 32px 0 rgba(0,0,0,0.10)',
+                    background: '#fff',
+                    maxHeight: '60vh',
+                  }}
                   required
                 >
                   <option value="GM">GM - General Merit</option>
@@ -105,8 +115,10 @@ const RankInput = ({ onRankSubmit }: RankInputProps) => {
                   <option value="3BG">3BG - Category 3B (General)</option>
                   <option value="3BK">3BK - Category 3B (Kannada Medium)</option>
                   <option value="3BR">3BR - Category 3B (Rural)</option>
+                  <option value="SCG">SCG - Scheduled Caste (General)</option>
                   <option value="SCK">SCK - Scheduled Caste (Kannada Medium)</option>
                   <option value="SCR">SCR - Scheduled Caste (Rural)</option>
+                  <option value="STG">STG - Scheduled Tribe (General)</option>
                   <option value="STK">STK - Scheduled Tribe (Kannada Medium)</option>
                   <option value="STR">STR - Scheduled Tribe (Rural)</option>
                 </select>

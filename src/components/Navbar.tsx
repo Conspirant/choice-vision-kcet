@@ -81,40 +81,40 @@ const Navbar = () => {
       </div>
       {/* Mobile dropdown menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white/95 border-b border-purple-200/50 shadow-lg animate-fade-in-down">
+        <div className="md:hidden fixed inset-0 top-16 z-50 bg-white/95 border-b border-purple-200/50 shadow-2xl animate-fade-in-down rounded-b-2xl overflow-y-auto max-h-[80vh] w-full">
           <div className="flex flex-col py-2 px-2 space-y-2">
             <Button 
               variant={location.pathname === '/' ? 'default' : 'ghost'}
               onClick={() => { setMobileMenuOpen(false); navigate('/'); }}
-              className="w-full justify-start"
+              className="w-full justify-start text-lg py-4 rounded-xl"
             >
               Home
             </Button>
             <Button 
               variant={location.pathname === '/planner' ? 'default' : 'ghost'}
               onClick={() => { setMobileMenuOpen(false); navigate('/planner'); }}
-              className="w-full justify-start"
+              className="w-full justify-start text-lg py-4 rounded-xl"
             >
               Planner
             </Button>
             <Button 
               variant={location.pathname === '/faq' ? 'default' : 'ghost'}
               onClick={() => { setMobileMenuOpen(false); navigate('/faq'); }}
-              className="w-full justify-start"
+              className="w-full justify-start text-lg py-4 rounded-xl"
             >
               FAQ
             </Button>
             <Button 
               variant={location.pathname === '/reviews' ? 'default' : 'ghost'}
               onClick={() => { setMobileMenuOpen(false); navigate('/reviews'); }}
-              className="w-full justify-start"
+              className="w-full justify-start text-lg py-4 rounded-xl"
             >
               Reviews
             </Button>
             <Button 
               variant={location.pathname === '/tour' ? 'default' : 'ghost'}
               onClick={() => { setMobileMenuOpen(false); navigate('/tour'); }}
-              className="w-full justify-start"
+              className="w-full justify-start text-lg py-4 rounded-xl"
             >
               Guided Tour
             </Button>
