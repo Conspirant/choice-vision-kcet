@@ -10,8 +10,8 @@ const Index = () => {
         <DisclaimerBanner />
         <Hero />
       </main>
-      <footer className="sticky bottom-0 left-0 right-0 p-4 text-center text-white bg-gradient-to-t from-black/70 via-black/30 to-transparent text-sm sm:text-base z-40" style={{paddingBottom: 'env(safe-area-inset-bottom)'}}>
-        Created with love by u/infamblackhoodieguy
+      <footer className="fixed bottom-0 left-0 w-full text-center py-3 text-sm text-muted-foreground opacity-80 bg-background z-50 shadow">
+        Created with <span role="img" aria-label="love">❤️</span> by Rishab
       </footer>
     </div>
   );

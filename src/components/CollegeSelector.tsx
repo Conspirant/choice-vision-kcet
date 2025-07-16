@@ -86,7 +86,7 @@ const CollegeSelector = ({ onAddPreference, userRank, onNext }: CollegeSelectorP
         <div className="space-y-6">
           {/* College Selection with integrated search in dropdown */}
           <div className="space-y-2">
-            <Label className="text-lg font-medium flex items-center gap-2">
+            <Label htmlFor="college-select" className="text-lg font-medium flex items-center gap-2">
               <School className="h-5 w-5 text-purple-600" />
               Select College *
             </Label>
@@ -94,7 +94,7 @@ const CollegeSelector = ({ onAddPreference, userRank, onNext }: CollegeSelectorP
               setSelectedCollege(value);
               setCollegeSearch(""); // Clear search after selection
             }}>
-              <SelectTrigger className="h-12 text-lg border-2 border-purple-200 focus:border-purple-500 rounded-xl premium-select">
+              <SelectTrigger id="college-select" name="college-select" className="h-12 text-lg border-2 border-purple-200 focus:border-purple-500 rounded-xl premium-select">
                 <SelectValue placeholder="Select College" />
               </SelectTrigger>
               <SelectContent>
@@ -131,12 +131,12 @@ const CollegeSelector = ({ onAddPreference, userRank, onNext }: CollegeSelectorP
           </div>
           {/* Branch Selection (unchanged) */}
           <div className="space-y-2">
-            <Label className="text-lg font-medium flex items-center gap-2">
+            <Label htmlFor="branch-select" className="text-lg font-medium flex items-center gap-2">
               <BookOpen className="h-5 w-5 text-purple-600" />
               Select Branch *
             </Label>
             <Select value={selectedBranch} onValueChange={setSelectedBranch}>
-              <SelectTrigger className="h-12 text-lg border-2 border-purple-200 focus:border-purple-500 rounded-xl">
+              <SelectTrigger id="branch-select" name="branch-select" className="h-12 text-lg border-2 border-purple-200 focus:border-purple-500 rounded-xl">
                 <SelectValue placeholder="Choose a branch" />
               </SelectTrigger>
               <SelectContent>

@@ -272,8 +272,10 @@ const CollegeList = ({ options = [], onOptionsChange }: CollegeListProps) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2 text-foreground">Priority Order</label>
+              <label htmlFor="priority-order-input" className="block text-sm font-medium mb-2 text-foreground">Priority Order</label>
               <Input
+                id="priority-order-input"
+                name="priority-order-input"
                 type="number"
                 value={priority}
                 onChange={(e) => setPriority(parseInt(e.target.value) || 1)}

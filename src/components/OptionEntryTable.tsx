@@ -22,12 +22,7 @@ export interface OptionEntry {
   location: string;
   collegeCourse: string; // New field for combined code
   notes?: string; // Optional notes field
-  comments?: {
-    placement?: string;
-    infrastructure?: string;
-    hostel?: string;
-    other?: string;
-  };
+  comments?: string; // Free-form comment field
 }
 
 interface OptionEntryTableProps {
@@ -60,7 +55,7 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [noteInput, setNoteInput] = useState<string>("");
   const [editingCommentsId, setEditingCommentsId] = useState<string | null>(null);
-  const [commentInput, setCommentInput] = useState<{placement: string; infrastructure: string; hostel: string; other: string}>({placement: "", infrastructure: "", hostel: "", other: ""});
+  const [commentInput, setCommentInput] = useState<string>("");
   const isMobile = useIsMobile();
 
   // Load saved options on mount
@@ -241,15 +236,9 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
     });
   };
 
-  // Helper to combine comments for PDF
+  // Helper to get comments for PDF (now just returns the string)
   const getCommentsSummary = (comments?: OptionEntry["comments"]): string => {
-    if (!comments) return "";
-    const parts = [];
-    if (comments.placement) parts.push(`Placement: ${comments.placement}`);
-    if (comments.infrastructure) parts.push(`Infra: ${comments.infrastructure}`);
-    if (comments.hostel) parts.push(`Hostel: ${comments.hostel}`);
-    if (comments.other) parts.push(`Other: ${comments.other}`);
-    return parts.join(" | ");
+    return comments || "";
   };
 
   const exportToPDF = () => {
@@ -316,15 +305,29 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
         fillColor: [245, 240, 255],
         textColor: [75, 0, 130],
         fontSize: 11,
+        overflow: 'linebreak',
+        halign: 'center',
+        valign: 'middle',
+        cellPadding: 2,
+        font: "helvetica",
       },
       alternateRowStyles: {
         fillColor: [230, 220, 255],
       },
-      styles: {
-        halign: "center",
-        valign: "middle",
-        cellPadding: 2,
-        font: "helvetica",
+      columnStyles: {
+        0: { cellWidth: 24 }, // College Course
+        1: { cellWidth: 18 }, // Option No
+        2: { cellWidth: 38 }, // College Name
+        3: { cellWidth: 32 }, // Location
+        4: { cellWidth: 38 }, // Course Name
+        5: { cellWidth: 24 }, // Fees
+        6: {
+          cellWidth: 120, // Comments column wide
+          halign: 'left',
+          fontSize: 12,
+          cellPadding: 6,
+          overflow: 'linebreak',
+        }
       },
       margin: { left: 10, right: 10 },
       didDrawPage: (data) => {
@@ -454,11 +457,11 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
 
   const handleCommentsSave = (id: string) => {
     const updatedOptions = options.map(opt =>
-      opt.id === id ? { ...opt, comments: { ...commentInput } } : opt
+      opt.id === id ? { ...opt, comments: commentInput } : opt
     );
     onOptionsChange(updatedOptions);
     setEditingCommentsId(null);
-    setCommentInput({placement: "", infrastructure: "", hostel: "", other: ""});
+    setCommentInput("");
     localStorage.setItem('kcet-options', JSON.stringify(updatedOptions));
   };
 
@@ -473,12 +476,12 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
         <h3 className="text-xl font-bold gradient-text mb-4">Add New Option</h3>
         <div className={`grid md:grid-cols-3 gap-4 ${isMobile ? 'gap-2' : ''}`}>
           <div className="col-span-3 md:col-span-1">
-            <label className="block text-sm font-medium mb-2 text-foreground">College</label>
+            <label htmlFor="college-select" className="block text-sm font-medium mb-2 text-foreground">College</label>
             <Select value={selectedCollege} onValueChange={value => {
               setSelectedCollege(value);
               setCollegeSearch("");
             }}>
-              <SelectTrigger className="h-12 text-lg border-2 border-amber-400 focus:border-amber-500 rounded-xl premium-select min-h-[48px] md:min-h-[40px]">
+              <SelectTrigger id="college-select" name="college-select" className="h-12 text-lg border-2 border-amber-400 focus:border-amber-500 rounded-xl premium-select min-h-[48px] md:min-h-[40px]">
                 <SelectValue placeholder="Select College" />
               </SelectTrigger>
               <SelectContent>
@@ -509,12 +512,12 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
           </div>
           
           <div className="col-span-3 md:col-span-1">
-            <label className="block text-sm font-medium mb-2 text-foreground">Branch</label>
+            <label htmlFor="branch-select" className="block text-sm font-medium mb-2 text-foreground">Branch</label>
             <Select value={selectedBranch} onValueChange={value => {
               setSelectedBranch(value);
               setBranchSearch("");
             }}>
-              <SelectTrigger className="h-12 text-lg border-2 border-amber-400 focus:border-amber-500 rounded-xl premium-select min-h-[48px] md:min-h-[40px]">
+              <SelectTrigger id="branch-select" name="branch-select" className="h-12 text-lg border-2 border-amber-400 focus:border-amber-500 rounded-xl premium-select min-h-[48px] md:min-h-[40px]">
                 <SelectValue placeholder="Select Branch" />
               </SelectTrigger>
               <SelectContent>
@@ -632,7 +635,7 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
             {filteredOptions.length === 0 ? (
               <div className="text-center text-gray-400 py-8">No options added yet.</div>
             ) : (
-              filteredOptions.map(option => (
+              filteredOptions.map((option, index) => (
                 <div key={option.id} className="rounded-2xl border border-amber-200 bg-white shadow-md p-5 flex flex-col gap-3 relative">
                   <div className="flex justify-between items-center mb-2">
                     <div>
@@ -640,8 +643,10 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
                       <div className="text-xs text-gray-700 mb-1">{option.location}</div>
                     </div>
                     <div className="flex flex-col items-end gap-1">
-                      <label className="text-xs text-muted-foreground font-medium mb-1">Priority</label>
+                      <label htmlFor={`priority-input-${option.id}-${index}`} className="text-xs text-muted-foreground font-medium mb-1">Priority</label>
                       <Input
+                        id={`priority-input-${option.id}-${index}`}
+                        name={`priority-input-${option.id}-${index}`}
                         type="number"
                         value={option.priority}
                         onChange={e => updatePriority(option.id, parseInt(e.target.value) || 0)}
@@ -685,18 +690,21 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
               <TableBody>
                 {filteredOptions.map((option, index) => (
                   <TableRow 
-                    key={option.id}
+                    key={option.collegeCourse + '-' + option.priority + '-' + index}
                     draggable
                     onDragStart={() => handleDragStart(index)}
                     onDragOver={handleDragOver}
                     onDrop={(e) => handleDrop(e, index)}
                     className={`cursor-move transition-all duration-200 border-amber-400/20 ${
-                      draggedItem === index ? 'opacity-50 bg-amber-950/30' : 'hover:bg-amber-950/20'
+                      draggedItem === index ? 'opacity-50 bg-amber-950/30' : index % 2 === 0 ? 'bg-amber-50/10' : 'bg-amber-950/10 hover:bg-amber-950/20'
                     }`}
                   >
                     <TableCell className="font-mono text-xs sm:text-sm text-amber-300">{option.collegeCourse}</TableCell>
                     <TableCell className="font-bold text-xs sm:text-lg text-center">
+                      <label htmlFor={`priority-input-${option.id}-${index}`} className="text-xs text-muted-foreground font-medium mb-1">Priority</label>
                       <Input
+                        id={`priority-input-${option.id}-${index}`}
+                        name={`priority-input-${option.id}-${index}`}
                         type="number"
                         value={option.priority}
                         onChange={e => updatePriority(option.id, parseInt(e.target.value) || 0)}
@@ -705,12 +713,10 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
                         max="999"
                       />
                     </TableCell>
-                    <TableCell className="font-medium text-xs sm:text-base text-foreground">{option.collegeName}</TableCell>
+                    <TableCell className="font-medium text-xs sm:text-base text-foreground max-w-[260px] whitespace-pre-line break-words" title={option.collegeName}>{option.collegeName}</TableCell>
                     <TableCell className="text-xs sm:text-sm text-muted-foreground font-medium">{option.location}</TableCell>
-                    <TableCell className="text-xs sm:text-sm text-foreground">{option.branchName}</TableCell>
-                    <TableCell className="text-xs sm:text-sm text-muted-foreground">
-                      please refer pdf
-                    </TableCell>
+                    <TableCell className="text-xs sm:text-sm text-foreground max-w-[220px] whitespace-pre-line break-words" title={option.branchName}>{option.branchName}</TableCell>
+                    <TableCell className="text-xs sm:text-sm text-muted-foreground" title="please refer pdf">please refer pdf</TableCell>
                     <TableCell>
                       <Button size="icon" variant="ghost" onClick={() => {
                         setEditingNoteId(option.id);
@@ -722,13 +728,7 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
                     <TableCell>
                       <Button size="icon" variant="ghost" onClick={() => {
                         setEditingCommentsId(option.id);
-                        const c = option.comments || {};
-                        setCommentInput({
-                          placement: c.placement || "",
-                          infrastructure: c.infrastructure || "",
-                          hostel: c.hostel || "",
-                          other: c.other || ""
-                        });
+                        setCommentInput(option.comments || "");
                       }}>
                         💬
                       </Button>
@@ -785,7 +785,10 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 overscroll-contain">
           <div className="bg-card p-4 rounded-xl shadow-xl w-full max-w-xs sm:max-w-md mx-2 overflow-y-auto max-h-[90vh]">
             <h4 className="text-lg font-bold mb-4">Edit Notes</h4>
+            <label htmlFor={`note-textarea-${editingNoteId}`} className="block text-sm font-medium mb-2">Notes</label>
             <textarea
+              id={`note-textarea-${editingNoteId}`}
+              name={`note-textarea-${editingNoteId}`}
               className="w-full h-32 border rounded-lg p-2 mb-4"
               value={noteInput}
               onChange={e => setNoteInput(e.target.value)}
@@ -804,45 +807,19 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 overscroll-contain">
           <div className="bg-card p-4 rounded-xl shadow-xl w-full max-w-xs sm:max-w-md mx-2 overflow-y-auto max-h-[90vh]">
             <h4 className="text-lg font-bold mb-4">Option Comments</h4>
-            <div className="mb-2">
-              <label className="block font-medium mb-1">Placement</label>
-              <textarea
-                className="w-full h-16 border rounded-lg p-2 mb-2 text-black"
-                value={commentInput.placement}
-                onChange={e => setCommentInput({...commentInput, placement: e.target.value})}
-                placeholder="Write about placements..."
-              />
-            </div>
-            <div className="mb-2">
-              <label className="block font-medium mb-1">Infrastructure</label>
-              <textarea
-                className="w-full h-16 border rounded-lg p-2 mb-2 text-black"
-                value={commentInput.infrastructure}
-                onChange={e => setCommentInput({...commentInput, infrastructure: e.target.value})}
-                placeholder="Write about infrastructure..."
-              />
-            </div>
-            <div className="mb-2">
-              <label className="block font-medium mb-1">Hostel</label>
-              <textarea
-                className="w-full h-16 border rounded-lg p-2 mb-2 text-black"
-                value={commentInput.hostel}
-                onChange={e => setCommentInput({...commentInput, hostel: e.target.value})}
-                placeholder="Write about hostel..."
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block font-medium mb-1">Other</label>
-              <textarea
-                className="w-full h-16 border rounded-lg p-2 text-black"
-                value={commentInput.other}
-                onChange={e => setCommentInput({...commentInput, other: e.target.value})}
-                placeholder="Other comments..."
-              />
-            </div>
+            <label htmlFor={`comment-textarea-${editingCommentsId}`} className="block text-sm font-medium mb-2">Comments</label>
+            <textarea
+              id={`comment-textarea-${editingCommentsId}`}
+              name={`comment-textarea-${editingCommentsId}`}
+              className="w-full h-48 border rounded-lg p-2 mb-4 text-black"
+              value={commentInput}
+              onChange={e => setCommentInput(e.target.value)}
+              placeholder="Write your comments here... (You can write as much as you want!)"
+              style={{ minHeight: 120, maxHeight: 400 }}
+            />
             <div className="flex justify-end gap-2">
               <Button onClick={() => setEditingCommentsId(null)} variant="outline">Cancel</Button>
-              <Button onClick={() => handleCommentsSave(editingCommentsId!)} disabled={Object.values(commentInput).every(v => v.trim() === "")}>Save</Button>
+              <Button onClick={() => handleCommentsSave(editingCommentsId!)} disabled={commentInput.trim() === ""}>Save</Button>
             </div>
           </div>
         </div>

@@ -31,7 +31,8 @@ const ImportExportButtons = ({ options, onOptionsChange }: ImportExportButtonsPr
         branchName: row.branchName || "",
         location: row.location || "",
         collegeCourse: row.collegeCourse || "",
-        notes: row.notes || ""
+        notes: row.notes || "",
+        comments: row.comments || ""
       }));
       onOptionsChange(importedOptions);
     };
@@ -39,7 +40,10 @@ const ImportExportButtons = ({ options, onOptionsChange }: ImportExportButtonsPr
   };
 
   const handleExport = () => {
-    const ws = XLSX.utils.json_to_sheet(options);
+    const ws = XLSX.utils.json_to_sheet(options.map(opt => ({
+      ...opt,
+      comments: opt.comments || ""
+    })));
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Options");
     XLSX.writeFile(wb, "KCET_Option_Entry_List.xlsx");

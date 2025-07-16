@@ -75,41 +75,45 @@ const RankInput = ({ onRankSubmit }: RankInputProps) => {
           </div>
 
           <div>
-            <Label htmlFor="category" className="text-sm font-medium mb-3 block text-foreground">
+            <Label htmlFor="category-select" className="text-sm font-medium mb-3 block text-foreground">
               Category *
             </Label>
             {isMobile ? (
-              <select
-                id="category"
-                value={category}
-                onChange={e => setCategory(e.target.value)}
-                className="premium-select h-12 w-full text-base px-4 py-3 rounded-xl border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                required
-              >
-                <option value="GM">GM - General Merit</option>
-                <option value="GMK">GMK - General Merit (Kannada Medium)</option>
-                <option value="GMR">GMR - General Merit (Rural)</option>
-                <option value="1G">1G - Category 1 (General)</option>
-                <option value="1K">1K - Category 1 (Kannada Medium)</option>
-                <option value="1R">1R - Category 1 (Rural)</option>
-                <option value="2AG">2AG - Category 2A (General)</option>
-                <option value="2AK">2AK - Category 2A (Kannada Medium)</option>
-                <option value="2AR">2AR - Category 2A (Rural)</option>
-                <option value="2BG">2BG - Category 2B (General)</option>
-                <option value="2BR">2BR - Category 2B (Rural)</option>
-                <option value="3AG">3AG - Category 3A (General)</option>
-                <option value="3AR">3AR - Category 3A (Rural)</option>
-                <option value="3BG">3BG - Category 3B (General)</option>
-                <option value="3BK">3BK - Category 3B (Kannada Medium)</option>
-                <option value="3BR">3BR - Category 3B (Rural)</option>
-                <option value="SCK">SCK - Scheduled Caste (Kannada Medium)</option>
-                <option value="SCR">SCR - Scheduled Caste (Rural)</option>
-                <option value="STK">STK - Scheduled Tribe (Kannada Medium)</option>
-                <option value="STR">STR - Scheduled Tribe (Rural)</option>
-              </select>
+              <>
+                <label htmlFor="category" className="block text-base font-medium mb-2 text-foreground md:hidden">Category *</label>
+                <select
+                  id="category"
+                  name="category"
+                  value={category}
+                  onChange={e => setCategory(e.target.value)}
+                  style={{ width: '100%', fontSize: 18, padding: '12px', borderRadius: 12, border: '1px solid #ccc', marginBottom: 12 }}
+                  required
+                >
+                  <option value="GM">GM - General Merit</option>
+                  <option value="GMK">GMK - General Merit (Kannada Medium)</option>
+                  <option value="GMR">GMR - General Merit (Rural)</option>
+                  <option value="1G">1G - Category 1 (General)</option>
+                  <option value="1K">1K - Category 1 (Kannada Medium)</option>
+                  <option value="1R">1R - Category 1 (Rural)</option>
+                  <option value="2AG">2AG - Category 2A (General)</option>
+                  <option value="2AK">2AK - Category 2A (Kannada Medium)</option>
+                  <option value="2AR">2AR - Category 2A (Rural)</option>
+                  <option value="2BG">2BG - Category 2B (General)</option>
+                  <option value="2BR">2BR - Category 2B (Rural)</option>
+                  <option value="3AG">3AG - Category 3A (General)</option>
+                  <option value="3AR">3AR - Category 3A (Rural)</option>
+                  <option value="3BG">3BG - Category 3B (General)</option>
+                  <option value="3BK">3BK - Category 3B (Kannada Medium)</option>
+                  <option value="3BR">3BR - Category 3B (Rural)</option>
+                  <option value="SCK">SCK - Scheduled Caste (Kannada Medium)</option>
+                  <option value="SCR">SCR - Scheduled Caste (Rural)</option>
+                  <option value="STK">STK - Scheduled Tribe (Kannada Medium)</option>
+                  <option value="STR">STR - Scheduled Tribe (Rural)</option>
+                </select>
+              </>
             ) : (
               <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger className="premium-select h-12">
+                <SelectTrigger id="category-select" name="category-select" className="premium-select h-12">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -139,11 +143,11 @@ const RankInput = ({ onRankSubmit }: RankInputProps) => {
           </div>
 
           <div>
-            <Label htmlFor="stream" className="text-sm font-medium mb-3 block text-foreground">
+            <Label htmlFor="stream-select" className="text-sm font-medium mb-3 block text-foreground">
               Stream
             </Label>
             <Select value={stream} onValueChange={setStream}>
-              <SelectTrigger className="premium-select h-12">
+              <SelectTrigger id="stream-select" name="stream-select" className="premium-select h-12">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
