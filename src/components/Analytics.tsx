@@ -29,6 +29,7 @@ const Analytics = ({ userRank, userCategory, selectedOptions }: AnalyticsProps) 
   const [recRound, setRecRound] = useState<string>("");
   const [recCourse, setRecCourse] = useState<string>("");
   const [recCategory, setRecCategory] = useState<string>("");
+  const [showRecLimitPopup, setShowRecLimitPopup] = useState(false);
 
   // Fetch cutoffs.json on mount
   useEffect(() => {
@@ -122,10 +123,12 @@ const Analytics = ({ userRank, userCategory, selectedOptions }: AnalyticsProps) 
         }
       }
     }
-    return Object.values(groups).map((rec: any) => ({
+    const recs = Object.values(groups).map((rec: any) => ({
       ...rec,
       qualifies: userRank && rec.category.toUpperCase() === userCategory.toUpperCase() && userRank <= rec.cutoff_rank
     })).sort((a: any, b: any) => a.cutoff_rank - b.cutoff_rank);
+    if (recs.length > 10) setShowRecLimitPopup(true);
+    return recs.slice(0, 10);
   }, [cutoffData, userRank, userCategory, recYear, recRound, recCourse, recCategory]);
 
   // Enhanced matching logic with multiple fallback strategies
@@ -612,6 +615,22 @@ const Analytics = ({ userRank, userCategory, selectedOptions }: AnalyticsProps) 
               </div>
             )}
           </Card>
+
+          {/* Recommendation Limit Popup */}
+          {showRecLimitPopup && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 overscroll-contain">
+              <div className="bg-card p-6 rounded-xl shadow-xl w-full max-w-md mx-2 overflow-y-auto max-h-[90vh] text-center">
+                <h2 className="text-2xl font-bold mb-3 gradient-text">Notice</h2>
+                <p className="mb-4 text-base text-muted-foreground">
+                  <strong>Feature Development Paused</strong><br/><br/>
+                  The recommendations feature is currently limited to a small set of colleges (10) for demonstration purposes only.<br/><br/>
+                  Further development of this feature has been paused, and the full recommendations functionality is not available at this time. If you require the complete list of eligible colleges for your rank, please contact the developer directly.<br/><br/>
+                  Thank you for your understanding and interest in this project.
+                </p>
+                <button onClick={() => setShowRecLimitPopup(false)} className="mt-2 px-6 py-2 rounded-lg font-semibold bg-gradient-to-r from-amber-500 to-yellow-500 text-black shadow">OK</button>
+              </div>
+            </div>
+          )}
         </>
       )}
       

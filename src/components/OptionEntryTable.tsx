@@ -57,6 +57,7 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
   const [editingCommentsId, setEditingCommentsId] = useState<string | null>(null);
   const [commentInput, setCommentInput] = useState<string>("");
   const isMobile = useIsMobile();
+  const [showAutoAddLimitPopup, setShowAutoAddLimitPopup] = useState(false);
 
   // Load saved options on mount
   useEffect(() => {
@@ -426,10 +427,13 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
           }
         });
     });
-    onOptionsChange(allOptions);
+    // Limit to 5-6 options only
+    const limitedOptions = allOptions.slice(0, 6);
+    onOptionsChange(limitedOptions);
+    setShowAutoAddLimitPopup(true);
     toast({
       title: "Options Auto-generated! 🚀",
-      description: `Generated ${allOptions.length} options for ${autoBranches.map(bc => branches.find(b => b.code === bc)?.name || bc).join(", ")}`
+      description: `Generated ${limitedOptions.length} options for ${autoBranches.map(bc => branches.find(b => b.code === bc)?.name || bc).join(", ")}`
     });
   };
 
@@ -821,6 +825,22 @@ const OptionEntryTable = ({ userRank, userCategory, options, onOptionsChange }: 
               <Button onClick={() => setEditingCommentsId(null)} variant="outline">Cancel</Button>
               <Button onClick={() => handleCommentsSave(editingCommentsId!)} disabled={commentInput.trim() === ""}>Save</Button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Auto Add Limit Popup */}
+      {showAutoAddLimitPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 overscroll-contain">
+          <div className="bg-card p-6 rounded-xl shadow-xl w-full max-w-md mx-2 overflow-y-auto max-h-[90vh] text-center">
+            <h2 className="text-2xl font-bold mb-3 gradient-text">Notice</h2>
+            <p className="mb-4 text-base text-muted-foreground">
+              <strong>Feature Development Paused</strong><br/><br/>
+              The automatic option generation feature is currently limited to a small set of colleges (5-6) for demonstration purposes only.<br/><br/>
+              Further development of this feature has been paused, and the full auto-add functionality is not available at this time. If you require the complete list of eligible colleges for your rank, please contact the developer directly.<br/><br/>
+              Thank you for your understanding and interest in this project.
+            </p>
+            <Button onClick={() => setShowAutoAddLimitPopup(false)} className="mt-2 px-6 py-2 rounded-lg font-semibold bg-gradient-to-r from-amber-500 to-yellow-500 text-black shadow">OK</Button>
           </div>
         </div>
       )}
