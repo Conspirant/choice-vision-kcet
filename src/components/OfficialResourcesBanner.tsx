@@ -30,6 +30,15 @@ const OfficialResourcesBanner = () => {
             size="sm"
             variant="outline"
             className="border-red-500/30 hover:bg-red-950/50 text-red-400"
+            onClick={() => window.open('https://keaonline.karnataka.gov.in/ugcet_neet_opt_entry_2025_v2/main/index.php', '_blank')}
+          >
+            <ExternalLink className="h-4 w-4 mr-2" />
+            Option Entry Portal
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="border-red-500/30 hover:bg-red-950/50 text-red-400"
             onClick={() => {
               // This would typically open a dialog with more details
               alert('For official information, visit cetonline.karnataka.gov.in\n\nThis tool is for practice only!');
@@ -47,6 +56,10 @@ const OfficialResourcesBanner = () => {
           <div className="flex items-center gap-2 text-red-300">
             <ExternalLink className="h-3 w-3" />
             <span>cetonline.karnataka.gov.in</span>
+          </div>
+          <div className="flex items-center gap-2 text-red-300">
+            <ExternalLink className="h-3 w-3" />
+            <span>Option Entry: <a href="https://keaonline.karnataka.gov.in/ugcet_neet_opt_entry_2025_v2/main/index.php" target="_blank" rel="noopener noreferrer" className="underline hover:text-red-400">keaonline.karnataka.gov.in/ugcet_neet_opt_entry_2025_v2/main/index.php</a></span>
           </div>
           <div className="flex items-center gap-2 text-red-300">
             <Phone className="h-3 w-3" />

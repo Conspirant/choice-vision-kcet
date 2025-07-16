@@ -1,4 +1,3 @@
-
 import { AlertTriangle, Shield } from "lucide-react";
 
 const DisclaimerBanner = () => {
@@ -23,6 +22,16 @@ const DisclaimerBanner = () => {
             </p>
           </div>
         </div>
+      </div>
+      <div className="mt-4 text-center">
+        <a
+          href="https://keaonline.karnataka.gov.in/ugcet_neet_opt_entry_2025_v2/main/index.php"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-block px-4 py-2 bg-gradient-to-r from-red-500 to-orange-400 text-white font-semibold rounded-lg shadow hover:from-red-600 hover:to-orange-500 transition"
+        >
+          Go to Official Option Entry Portal
+        </a>
       </div>
     </div>
   );
