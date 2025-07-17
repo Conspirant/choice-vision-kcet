@@ -92,7 +92,6 @@ const Planner = () => {
 
   // --- Mock Allotment Simulator ---
   function simulateAllotment() {
-    console.log('Simulating for year:', selectedYear, 'round:', selectedRound);
     setSimulating(true);
     setTimeout(() => {
       // Check if there is any data for the selected year/round
@@ -106,13 +105,13 @@ const Planner = () => {
         setSimulating(false);
         return;
       }
-      const result = findEligibleOption(
+      const result = simulateBestAllotment(
         userRank,
         userCategory,
         selectedOptions,
         cutoffs,
-        selectedRound, // Use selected round
-        selectedYear   // Use selected year
+        selectedRound,
+        selectedYear
       );
       setAllotmentResult(result);
       setShowAllotmentModal(true);
@@ -120,43 +119,123 @@ const Planner = () => {
     }, 200); // Simulate processing delay
   }
 
-  // Helper to normalize codes and strings (move to top for reuse)
-  const norm = (s: string) => (s || "").trim().toUpperCase();
+  // Helper: normalize string for comparison (case/whitespace-insensitive)
+  function normStr(s) {
+    return (s || "").replace(/\s+/g, " ").trim().toLowerCase();
+  }
 
-  function findEligibleOption(userRank: number|null, userCategory: string, userOptions: any[], cutoffs: any[], round = "EXT", year = "2023") {
-    if (!userRank || !userCategory || !userOptions?.length) return null;
-    for (const option of userOptions) {
-      // Debug: log the option being checked
-      console.log('Trying to match option:', option);
-      const match = cutoffs.find(entry =>
-        norm(entry.institute_code) === norm(option.collegeCode) &&
-        norm(entry.course) === norm(option.branchCode) &&
-        norm(entry.category) === norm(userCategory) &&
-        norm(entry.round) === norm(round) &&
-        norm(entry.year) === norm(year)
-      );
-      if (match) {
-        console.log('Matched cutoff entry:', match);
-        if (userRank <= match.cutoff_rank) {
-          return { option, cutoff: match };
-        } else {
-          console.log('User rank', userRank, 'is higher than cutoff', match.cutoff_rank);
-        }
-      } else {
-        // Debug: log why not matched
-        const possible = cutoffs.filter(entry =>
-          norm(entry.institute_code) === norm(option.collegeCode) &&
-          norm(entry.course) === norm(option.branchCode)
-        );
-        if (possible.length > 0) {
-          console.log('Found possible matches for code but not for category/round/year:', possible);
-        } else {
-          console.log('No cutoff entry found for code:', norm(option.collegeCode), norm(option.branchCode));
-        }
+  function findBestMatch(option, year, round) {
+    if (!cutoffs) return null;
+    const userCourseName = normStr(option.branchName);
+    // 1. Exact match: code, name, category, year, round
+    let bestEntry = cutoffs.find((c) =>
+      norm(c.institute_code) === norm(option.collegeCode) &&
+      norm(c.course) === norm(option.branchCode) &&
+      normStr(c.course_name || c.branchName || "") === userCourseName &&
+      norm(c.category) === norm(userCategory) &&
+      norm(c.year) === norm(year) &&
+      norm(c.round) === norm(round)
+    );
+    if (bestEntry) return { entry: bestEntry, matchType: "Exact match" };
+    // 2. Fuzzy name match: code, similar name, any category, year, round
+    let candidates = cutoffs.filter((c) =>
+      norm(c.institute_code) === norm(option.collegeCode) &&
+      norm(c.course) === norm(option.branchCode) &&
+      norm(c.year) === norm(year) &&
+      norm(c.round) === norm(round)
+    );
+    if (candidates.length > 0) {
+      // Find closest name match
+      let best = null, bestScore = 0;
+      for (const c of candidates) {
+        const cname = normStr(c.course_name || c.branchName || "");
+        let score = 0;
+        if (cname === userCourseName) score = 100;
+        else if (cname.includes(userCourseName) || userCourseName.includes(cname)) score = 80;
+        else if (cname.split(" ").some(w => userCourseName.includes(w))) score = 60;
+        if (score > bestScore) { best = c; bestScore = score; }
       }
+      if (best && bestScore >= 80) return { entry: best, matchType: "Course code + close name match" };
+      if (best && bestScore >= 60) return { entry: best, matchType: "Course code + partial name match (ambiguous)" };
     }
+    // 3. Historical: code+name, category, any year/round
+    bestEntry = cutoffs.find((c) =>
+      norm(c.institute_code) === norm(option.collegeCode) &&
+      norm(c.course) === norm(option.branchCode) &&
+      normStr(c.course_name || c.branchName || "") === userCourseName &&
+      norm(c.category) === norm(userCategory)
+    );
+    if (bestEntry) return { entry: bestEntry, matchType: "Historical (same course/category)" };
+    // 4. Historical: code+close name, any category, any year/round
+    candidates = cutoffs.filter((c) =>
+      norm(c.institute_code) === norm(option.collegeCode) &&
+      norm(c.course) === norm(option.branchCode)
+    );
+    if (candidates.length > 0) {
+      let best = null, bestScore = 0;
+      for (const c of candidates) {
+        const cname = normStr(c.course_name || c.branchName || "");
+        let score = 0;
+        if (cname === userCourseName) score = 100;
+        else if (cname.includes(userCourseName) || userCourseName.includes(cname)) score = 80;
+        else if (cname.split(" ").some(w => userCourseName.includes(w))) score = 60;
+        if (score > bestScore) { best = c; bestScore = score; }
+      }
+      if (best && bestScore >= 80) return { entry: best, matchType: "Historical (close name match)" };
+      if (best && bestScore >= 60) return { entry: best, matchType: "Historical (partial name match, ambiguous)" };
+    }
+    // No valid cutoff for this course in this college
     return null;
   }
+
+  function getChanceStatus(userRank, cutoffRank) {
+    if (userRank <= cutoffRank) {
+      return { status: "High Chance", probability: Math.min(95, 85 + Math.random() * 10) };
+    } else if (userRank <= cutoffRank * 1.2) {
+      return { status: "Moderate Chance", probability: Math.min(75, 45 + Math.random() * 30) };
+    } else {
+      return { status: "Low Chance", probability: Math.min(30, Math.random() * 30) };
+    }
+  }
+
+  function simulateBestAllotment(userRank, userCategory, userOptions, cutoffs, round, year) {
+    if (!userRank || !userCategory || !userOptions?.length) return null;
+    const results = userOptions.map((option) => {
+      const match = findBestMatch(option, year, round);
+      if (match && match.entry && typeof match.entry.cutoff_rank === "number") {
+        const { status, probability } = getChanceStatus(userRank, match.entry.cutoff_rank);
+        return {
+          option,
+          cutoff: match.entry,
+          matchType: match.matchType,
+          status,
+          probability,
+        };
+      } else {
+        return {
+          option,
+          cutoff: null,
+          matchType: "No data",
+          status: "Unknown",
+          probability: 0,
+        };
+      }
+    });
+    // Sort by user preference (priority), then by status (High > Moderate > Low > Unknown)
+    const statusOrder = { "High Chance": 1, "Moderate Chance": 2, "Low Chance": 3, "Unknown": 4 };
+    results.sort((a, b) => {
+      if (statusOrder[a.status] !== statusOrder[b.status]) {
+        return statusOrder[a.status] - statusOrder[b.status];
+      }
+      return a.option.priority - b.option.priority;
+    });
+    // Pick the best possible allotment
+    const best = results.find(r => r.status === "High Chance") || results[0];
+    return { best, all: results };
+  }
+
+  // Helper to normalize codes and strings (move to top for reuse)
+  const norm = (s: string) => (s || "").trim().toUpperCase();
 
   return (
     <>
@@ -389,7 +468,7 @@ const Planner = () => {
                 {/* --- Allotment Result Modal --- */}
                 {showAllotmentModal && (
                   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-1 sm:p-0">
-                    <div className="bg-gradient-to-br from-purple-900 via-purple-800 to-amber-200 rounded-2xl shadow-2xl p-3 sm:p-8 w-full max-w-full sm:max-w-md relative border-4 border-amber-400 mx-1 sm:mx-0">
+                    <div className="bg-gradient-to-br from-purple-900 via-purple-800 to-amber-200 rounded-2xl shadow-2xl p-3 sm:p-8 w-full max-w-full sm:max-w-xl max-h-[90vh] overflow-y-auto relative border-4 border-amber-400 mx-1 sm:mx-auto sm:my-8">
                       <button
                         className="absolute top-2 right-2 text-purple-400 hover:text-amber-500 text-xl"
                         onClick={() => setShowAllotmentModal(false)}
@@ -398,24 +477,56 @@ const Planner = () => {
                       <div className="flex flex-col items-center gap-2 sm:gap-3">
                         <div className="text-4xl sm:text-5xl mb-1 sm:mb-2 text-amber-400">🎉</div>
                         <h2 className="text-xl sm:text-2xl font-bold text-purple-200 mb-1 sm:mb-2">Mock Allotment Result</h2>
-                        {allotmentResult?.warning ? (
-                          <div className="text-base sm:text-lg text-amber-400 font-semibold mb-1 sm:mb-2">{allotmentResult.warning}</div>
-                        ) : allotmentResult ? (
-                          <>
-                            <div className="text-base sm:text-lg font-semibold text-amber-400 mb-1">{allotmentResult.option.branchName} <span className="text-purple-200">@</span> {allotmentResult.option.collegeName}</div>
-                            <div className="text-xs sm:text-sm text-purple-200 mb-1 sm:mb-2">(Option #{allotmentResult.option.priority})</div>
-                            <div className="bg-purple-900/80 border border-amber-400 rounded-lg p-2 sm:p-4 w-full text-left mb-1 sm:mb-2">
-                              <div><span className="font-medium text-amber-300">Institute Code:</span> <span className="text-purple-100">{allotmentResult.cutoff.institute_code}</span></div>
-                              <div><span className="font-medium text-amber-300">Course Code:</span> <span className="text-purple-100">{allotmentResult.cutoff.course}</span></div>
-                              <div><span className="font-medium text-amber-300">Category:</span> <span className="text-purple-100">{allotmentResult.cutoff.category}</span></div>
-                              <div><span className="font-medium text-amber-300">Cutoff Rank ({selectedYear} {selectedRound}):</span> <span className="text-purple-100">{allotmentResult.cutoff.cutoff_rank.toLocaleString()}</span></div>
-                              <div><span className="font-medium text-amber-300">Your Rank:</span> <span className="text-purple-100">{userRank?.toLocaleString()}</span></div>
-                            </div>
-                            <div className="text-amber-400 font-semibold text-center">Congratulations! You would have been allotted this option in {selectedYear} {selectedRound}.</div>
-                          </>
+                        {allotmentResult?.best?.status === "Unknown" ? (
+                          <div className="text-base sm:text-lg text-amber-400 font-semibold mb-1 sm:mb-2">No eligible allotment found for your rank and preferences.</div>
                         ) : (
-                          <div className="text-base sm:text-lg text-purple-200 font-semibold mb-1 sm:mb-2">No eligible allotment found for your rank and preferences.</div>
+                          <>
+                            <div className="text-base sm:text-lg font-semibold text-amber-400 mb-1">
+                              {allotmentResult.best.option.branchName} <span className="text-purple-200">@</span> {allotmentResult.best.option.collegeName}
+                            </div>
+                            <div className="text-xs sm:text-sm text-purple-200 mb-1 sm:mb-2">(Option #{allotmentResult.best.option.priority})</div>
+                            <div className="bg-purple-900/80 border border-amber-400 rounded-lg p-2 sm:p-4 w-full text-left mb-1 sm:mb-2">
+                              <div><span className="font-medium text-amber-300">Institute Code:</span> <span className="text-purple-100">{allotmentResult.best.option.collegeCode}</span></div>
+                              <div><span className="font-medium text-amber-300">Course Code:</span> <span className="text-purple-100">{allotmentResult.best.option.branchCode}</span></div>
+                              <div><span className="font-medium text-amber-300">Category:</span> <span className="text-purple-100">{userCategory}</span></div>
+                              <div><span className="font-medium text-amber-300">Cutoff Rank ({selectedYear} {selectedRound}):</span> <span className="text-purple-100">{allotmentResult.best.cutoff?.cutoff_rank ? allotmentResult.best.cutoff.cutoff_rank.toLocaleString() : "No data"}</span></div>
+                              <div><span className="font-medium text-amber-300">Your Rank:</span> <span className="text-purple-100">{userRank?.toLocaleString()}</span></div>
+                              <div><span className="font-medium text-amber-300">Chance:</span> <span className="text-purple-100">{allotmentResult.best.status} ({Math.round(allotmentResult.best.probability)}%)</span></div>
+                              <div><span className="font-medium text-amber-300">Match Type:</span> <span className="text-purple-100">{allotmentResult.best.matchType}</span></div>
+                            </div>
+                            <div className="text-amber-400 font-semibold text-center">{allotmentResult.best.status === "High Chance" ? "Congratulations! You would have been allotted this option." : allotmentResult.best.status === "Moderate Chance" ? "You have a moderate chance for this option." : "Low chance. Consider safer options."}</div>
+                          </>
                         )}
+                        {/* Show all options with their probabilities */}
+                        <div className="w-full mt-4">
+                          <h4 className="text-base font-bold text-purple-200 mb-2">All Options & Probabilities</h4>
+                          <div className="max-h-48 overflow-y-auto w-full">
+                            <table className="w-full text-xs sm:text-sm border-separate border-spacing-y-1">
+                              <thead>
+                                <tr className="bg-purple-900/80 text-amber-300">
+                                  <th className="px-2 py-1 text-left">Option</th>
+                                  <th className="px-2 py-1 text-left">College</th>
+                                  <th className="px-2 py-1 text-left">Chance</th>
+                                  <th className="px-2 py-1 text-left">Probability</th>
+                                  <th className="px-2 py-1 text-left">Cutoff</th>
+                                  <th className="px-2 py-1 text-left">Match</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {allotmentResult?.all?.map((r, idx) => (
+                                  <tr key={r.option.collegeCourse + '-' + r.option.priority + '-' + idx} className={r.status === "High Chance" ? "bg-green-900/30" : r.status === "Moderate Chance" ? "bg-yellow-900/30" : r.status === "Low Chance" ? "bg-red-900/30" : "bg-gray-900/10"}>
+                                    <td className="px-2 py-1 font-bold">{r.option.priority}</td>
+                                    <td className="px-2 py-1">{r.option.collegeName} ({r.option.branchName})</td>
+                                    <td className="px-2 py-1">{r.status}</td>
+                                    <td className="px-2 py-1">{Math.round(r.probability)}%</td>
+                                    <td className="px-2 py-1">{r.cutoff?.cutoff_rank ? r.cutoff.cutoff_rank.toLocaleString() : "-"}</td>
+                                    <td className="px-2 py-1">{r.matchType}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
                         <button onClick={() => setShowAllotmentModal(false)} className="mt-2 sm:mt-4 px-4 sm:px-6 py-2 rounded-lg font-semibold bg-gradient-to-r from-purple-700 to-amber-400 text-white shadow hover:from-amber-400 hover:to-purple-700 transition w-full sm:w-auto">OK</button>
                       </div>
                     </div>
